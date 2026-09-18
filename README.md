@@ -19,10 +19,10 @@ npm run preview  # sert dist/
 ## Structure
 
 - `src/styles/global.css` — tous les tokens (DESIGN.md §3 et §9). Aucune couleur, taille ou rayon en dur ailleurs.
-- `src/components/` — inventaire fermé de DESIGN.md §5 : Button, Header, Hero, FeatureBlock, Steps, SpecCard, DemoForm, Footer, plus Logo (S + wordmark).
+- `src/components/` — inventaire fermé de DESIGN.md §5 : Button, Header, Hero (bandeau photo), FeatureBlock, ExplodedView, Steps, SpecCard, DemoForm, Footer, plus Logo (S + wordmark).
 - `src/pages/index.astro` — la page, sections dans l'ordre de DESIGN.md §6.
 - `src/pages/merci.astro` — page de confirmation du formulaire.
-- `public/brand/`, `public/product/` — assets (voir DESIGN.md §8).
+- `public/brand/`, `public/product/` — assets (voir DESIGN.md §8). Les visuels produit sont générés par IA, en WebP ≤ 1600 px.
 
 ## Contenu à valider
 

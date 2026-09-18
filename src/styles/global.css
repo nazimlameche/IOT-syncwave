@@ -85,6 +85,10 @@ p { max-width: 36rem; }
 @utility ease-out-token { transition-timing-function: var(--ease-out); }
 @utility duration-fast { transition-duration: var(--duration-fast); }
 @utility duration-base { transition-duration: var(--duration-base); }
+/* Voile sombre sous le texte d'un bandeau photo — DESIGN.md §5 Bandeau photo */
+@utility bg-scrim { background-image: linear-gradient(to top, var(--color-bg) 0%, color-mix(in srgb, var(--color-bg) 60%, transparent) 45%, transparent 100%); }
+/* Fondu des bords d'une image sur fond noir vers --color-bg — DESIGN.md §8 */
+@utility mask-fade { mask-image: radial-gradient(ellipse farthest-side at center, black 60%, transparent 100%); }
 
 /* Hero : le seul moment animé du site — DESIGN.md §4 */
 @keyframes hero-product-in {

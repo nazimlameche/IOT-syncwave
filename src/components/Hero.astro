@@ -1,13 +1,31 @@
 ---
 import Button from './Button.astro';
+
+/**
+ * Hero en bandeau photo — DESIGN.md §5 Hero (variante photo) et §4.
+ * Seul moment animé du site : la photo apparaît, puis le halo cyan s'allume et respire.
+ */
 ---
 
-<section id="hero" class="relative overflow-hidden pt-32 md:pt-40">
-  <div
-    class="mx-auto grid max-w-content items-center gap-12 px-6 pb-section md:grid-cols-5 md:gap-8 md:px-12"
-  >
-    <!-- Texte : 40 % desktop, second sur mobile -->
-    <div class="order-2 md:order-1 md:col-span-2">
+<section id="hero" class="relative flex min-h-dvh items-end overflow-hidden">
+  <!-- Visuel généré par IA, voir DESIGN.md §8 -->
+  <img
+    class="hero-product absolute inset-0 h-full w-full object-cover"
+    src="/product/ambiance-foule.webp"
+    width="1600"
+    height="900"
+    alt="Foule de festival la nuit, poignets levés portant des bracelets Syncwave allumés en cyan"
+    fetchpriority="high"
+    decoding="async"
+  />
+  <!-- Halo : la lumière vient de la scène et des bracelets, il respire -->
+  <div class="hero-halo pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="absolute left-1/2 top-1/4 h-1/2 w-2/3 -translate-x-1/2 rounded-full bg-cyan/20 blur-halo"></div>
+  </div>
+  <div class="pointer-events-none absolute inset-0 bg-scrim" aria-hidden="true"></div>
+
+  <div class="relative mx-auto w-full max-w-content px-6 pb-section pt-40 md:px-12">
+    <div class="max-w-prose">
       <h1 class="text-display text-text">Tout le festival au poignet</h1>
       <p class="mt-6 text-body-lg text-text-muted">
         Syncwave réunit lumière, paiement, accès et sécurité dans un seul bracelet, et vous donne une vue
@@ -16,27 +34,6 @@ import Button from './Button.astro';
       <div class="mt-8 flex flex-wrap items-center gap-6">
         <Button href="#demo">Demander une démo</Button>
         <Button href="#fonctionnalites" variant="link">Voir les fonctionnalités</Button>
-      </div>
-    </div>
-
-    <!-- Visuel : 60 % desktop, premier sur mobile -->
-    <div class="relative order-1 md:order-2 md:col-span-3">
-      <!-- Halos : cyan en haut, magenta en bas, comme les LED -->
-      <div class="hero-halo pointer-events-none absolute inset-0" aria-hidden="true">
-        <div class="absolute left-1/6 top-0 h-2/3 w-2/3 rounded-full bg-cyan/40 blur-halo"></div>
-        <div class="absolute bottom-0 right-1/6 h-2/3 w-2/3 rounded-full bg-magenta/40 blur-halo"></div>
-      </div>
-      <div class="hero-parallax relative">
-        <img
-          class="hero-product mx-auto w-full max-w-sm md:max-w-md"
-          src="/product/bracelet-hero.png"
-          width="294"
-          height="336"
-          alt="Bracelet Syncwave noir mat, bandes lumineuses cyan et magenta"
-          fetchpriority="high"
-          decoding="async"
-        />
-        <!-- TODO: remplacer par un rendu détouré haute définition (≥ 1200 px, WebP), voir DESIGN.md §8 -->
       </div>
     </div>
   </div>

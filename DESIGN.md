@@ -22,7 +22,7 @@ Références de ton (à imiter dans l'esprit, jamais copier) : pages produit de 
 
 Deux marques cohabitent :
 
-- **Syncwave** (le produit) : marque principale du site. Symbole = le "S" du boîtier. Porte toute l'identité visuelle.
+- **Syncwave** (le produit) : marque principale du site. Symbole = le pictogramme "S" fourni (`/public/brand/syncwave-mark-512.png`), bicolore cyan/magenta avec visage et rayons. C'est la **seule exception** à la règle « une couleur néon dominante par section » et au ton « calme » du §1 : il n'apparaît qu'à petite taille (40 px dans le header et le footer, favicon), jamais agrandi en visuel de section. Le wordmark reste le mot « Syncwave » en Sora 700, pas le lettrage de l'image.
 - **Moore** (l'entreprise) : marque secondaire. Son logo (blason, tartan, mascotte) n'est pas compatible avec la DA sombre et doit rester discret.
 
 Règles :
@@ -138,7 +138,7 @@ Pas d'ombre grise classique (`rgba(0,0,0,.1)` interdit). Sur fond sombre, l'él�
 
 Le mouvement est concentré en **un seul moment** : l'arrivée du hero. Le reste du site est calme.
 
-1. **Hero (le seul moment orchestré)** : au chargement, le produit apparaît (opacité 0 → 1, léger scale 0.96 → 1, `--duration-slow`, `--ease-out`), puis le halo derrière lui "s'allume" (opacité 0 → 1 avec un léger retard de 200 ms). Ensuite le halo respire indéfiniment : variation d'opacité 0.7 ↔ 1 sur `--pulse-period`, très douce. C'est la signature du site : les LED du bracelet qui pulsent.
+1. **Hero (le seul moment orchestré)** : au chargement, le visuel du hero apparaît (opacité 0 → 1, léger scale 0.96 → 1, `--duration-slow`, `--ease-out`), puis le halo "s'allume" (opacité 0 → 1 avec un léger retard de 200 ms). Ensuite le halo respire indéfiniment : variation d'opacité 0.7 ↔ 1 sur `--pulse-period`, très douce. C'est la signature du site : les LED du bracelet qui pulsent. En variante bandeau photo (voir §5 Hero), c'est la photo qui apparaît et le halo est posé sur la zone lumineuse de la photo.
 2. **Aucune animation d'entrée sur les sections suivantes.** Pas de fade-and-slide-up à chaque section, pas de compteur qui s'anime, pas de card qui remonte au hover.
 3. **Hover** : les boutons et liens réagissent (couleur, halo léger sur le CTA principal, `--duration-fast`). Les cards de contenu ne bougent pas au hover.
 4. **Parallaxe** : autorisé uniquement sur le visuel produit du hero, et uniquement si l'implémentation est légère (CSS `animation-timeline: scroll()` ou 10 lignes de JS). Amplitude faible (≤ 40 px).
@@ -162,13 +162,21 @@ Inventaire fermé. Ne pas créer d'autre composant sans l'ajouter ici.
 - Mobile : menu plein écran, fond `--color-bg`.
 
 ### Hero
-- Le produit occupe l'écran. Layout desktop : titre + chapô + CTA à gauche (40 %), visuel produit à droite (60 %) avec halo `--glow-cyan` + `--glow-magenta` combinés derrière (deux ellipses floues, `filter: blur(80px)`, une cyan en haut, une magenta en bas, reprenant la disposition des LED).
-- Mobile : produit d'abord, puis texte, empilés.
-- Titre : `--text-display`, monochrome. Chapô : `--text-body-lg`, `--color-text-muted`, max 2 lignes. Un bouton primaire, un lien secondaire maximum.
+Deux variantes, une seule utilisée à la fois :
+- **Produit** : le produit occupe l'écran. Layout desktop : titre + chapô + CTA à gauche (40 %), visuel produit à droite (60 %) avec halo `--glow-cyan` + `--glow-magenta` combinés derrière (deux ellipses floues, `filter: blur(80px)`, une cyan en haut, une magenta en bas, reprenant la disposition des LED). Mobile : produit d'abord, puis texte, empilés.
+- **Bandeau photo** (variante retenue) : photo d'ambiance plein écran (`min-height: 100dvh`, `object-fit: cover`), voile `bg-scrim` (dégradé de `--color-bg` vers transparent, du bas vers le haut, ce n'est pas le gradient signature) pour la lisibilité, texte posé en bas à gauche dans le conteneur, un halo cyan flou sur la zone lumineuse de la photo. Une seule couleur néon dominante sur la photo.
+- Dans les deux cas : titre `--text-display`, monochrome. Chapô : `--text-body-lg`, `--color-text-muted`, max 2 lignes. Un bouton primaire, un lien secondaire maximum. Le bouton primaire du header passe en secondaire tant que le hero est visible avec son propre bouton primaire (règle « un seul bouton primaire par écran »).
 
 ### Bloc fonctionnalité
 - Une fonctionnalité = un écran ou demi-écran, visuel d'un côté, texte de l'autre, alternance gauche/droite. **Pas une grille de 6 cards identiques avec icône.**
+- Visuel : photo ou rendu plein cadre (`object-fit: cover`) dans un bloc `--radius-lg`, trait `--color-line`, ratio 1:1 mobile / 4:3 desktop. Un pictogramme monochrome dans un bloc `--color-surface` n'est qu'un placeholder à signaler en TODO.
 - Texte : `--text-h1` + un paragraphe `--text-body` ≤ 3 lignes.
+
+### Vue éclatée
+- Image fixe des composants du bracelet séparés verticalement sur fond noir, posée avec `mask-fade` (fondu radial des bords vers `--color-bg`).
+- Légendes numérotées de haut en bas : c'est une vraie séquence (l'ordre d'assemblage), donc la numérotation est autorisée. Numéros en Sora `--color-text-muted`.
+- Desktop : image à gauche, liste des légendes à droite, repères (trait `--color-line` + numéro) posés sur l'image à la hauteur du composant, positions en % de la hauteur. Mobile : image puis liste, sans repères.
+- Cinq composants maximum. Ne décrire que ce qui est visible sur l'image ; les caractéristiques techniques vont dans les cartes de specs.
 
 ### Séquence "Comment ça marche"
 - Le seul endroit où une numérotation est autorisée (c'est une vraie séquence). Trois étapes maximum, numéros en Sora, `--color-text-muted`.
@@ -192,11 +200,12 @@ Inventaire fermé. Ne pas créer d'autre composant sans l'ajouter ici.
 
 1. **Hero** — le produit, une phrase, un CTA.
 2. **Fonctionnalités** — 3 à 4 blocs alternés, un bénéfice par bloc.
-3. **Comment ça marche** — 3 étapes numérotées.
-4. **Caractéristiques** — grille de 4 à 6 cartes de specs (autonomie, poids, étanchéité, connectivité…).
-5. **Précommande / Contact** — formulaire court (e-mail + bouton, ou nom + e-mail + message).
-6. **À propos** — l'équipe Moore, logo Moore couleur autorisé ici.
-7. **Footer**.
+3. **Sous le silicone** — vue éclatée légendée du bracelet.
+4. **Comment ça marche** — 3 étapes numérotées.
+5. **Caractéristiques** — grille de 4 à 6 cartes de specs (autonomie, poids, étanchéité, connectivité…).
+6. **Précommande / Contact** — formulaire court (e-mail + bouton, ou nom + e-mail + message).
+7. **À propos** — l'équipe Moore, logo Moore couleur autorisé ici. Si les visuels du site sont générés par IA, le dire ici en `--text-small`.
+8. **Footer**.
 
 Chaque section a un titre en `--text-h1` et au plus un paragraphe d'introduction. Pas de section "Témoignages", "Partenaires" ou "FAQ" inventée s'il n'y a pas de contenu réel pour la remplir.
 
@@ -215,14 +224,18 @@ Chaque section a un titre en `--text-h1` et au plus un paragraphe d'introduction
 ## 8. Assets
 
 Dossier `/public/brand/` :
-- `syncwave-mark.svg` — le "S" seul, monochrome, remplissable en `currentColor`.
-- `syncwave-wordmark.svg` — "S" + "Syncwave".
+- `syncwave-mark.png` / `syncwave-mark-512.png` — le pictogramme "S" détouré, fond transparent (bicolore, voir §2). Une version SVG serait préférable pour la netteté ; à produire si possible.
+- `syncwave-logo.png` — logo complet fourni (S + lettrage), conservé pour les supports hors site (deck, réseaux). Non utilisé sur le site.
 - `moore-mono.svg` — blason Moore simplifié monochrome (à produire ; en attendant, texte "Moore").
 - `moore-full.png` — logo Moore complet (section À propos uniquement).
 
-Dossier `/public/product/` :
-- `bracelet-hero.png` (ou `.webp`) — rendu principal, fond transparent. Le rendu existant est sur fond blanc : le détourer avant usage, un rendu sur fond blanc posé sur `--color-bg` est interdit.
-- Autres angles si disponibles, mêmes contraintes.
+Dossier `/public/product/` (visuels générés par IA, style validé : fond noir, une seule couleur d'accent par image) :
+- `ambiance-foule.webp` — 16:9, foule de festival, bracelets allumés en cyan. Hero bandeau photo.
+- `bracelet-render.webp` — 1:1, rendu trois quarts du bracelet LED allumées, fond noir. Bloc fonctionnalité « lumière ».
+- `paiement.webp` — 4:3, poignet sur terminal sans contact. Bloc « paiement et accès ».
+- `application.webp` — 4:3, téléphone avec la carte du festival. Bloc « amis et SOS ».
+- `vue-eclatee.webp` — 3:4, composants séparés verticalement. Section « Sous le silicone ».
+- Une image sur fond noir uni (`#000`–`#0A0A0E`) posée sur `--color-bg` doit être soit plein cadre dans un bloc arrondi, soit fondue avec `mask-fade`. Un rendu sur fond blanc posé sur le fond sombre reste interdit.
 
 Formats : WebP ou AVIF, largeur max 1600 px, `loading="lazy"` sur tout sauf le visuel du hero (qui a `fetchpriority="high"`).
 

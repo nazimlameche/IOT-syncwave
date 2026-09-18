@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import FeatureBlock from '../components/FeatureBlock.astro';
+import ExplodedView from '../components/ExplodedView.astro';
 import Steps from '../components/Steps.astro';
 import SpecCard from '../components/SpecCard.astro';
 import DemoForm from '../components/DemoForm.astro';
@@ -31,6 +32,16 @@ const specs = [
   { value: '—', label: 'Connectivité (NFC, Bluetooth…)' }, // TODO: technologies embarquées
 ];
 
+// Vue éclatée : positions en % de la hauteur de l'image vue-eclatee.webp
+// TODO: contenu à valider — caractéristiques réelles de chaque composant (matériau, capacité, protocole)
+const exploded = [
+  { y: 22, title: 'Bracelet silicone', text: 'Souple, fermeture à boucle réglable.' },
+  { y: 47, title: 'Bande LED', text: 'La bande lumineuse pilotée à distance pour les jeux de couleurs.' },
+  { y: 57, title: 'Boîtier', text: 'Le module principal, marqué du S, sans écran ni bouton apparent.' },
+  { y: 70, title: 'Carte électronique et antenne NFC', text: 'Paiement, contrôle d’accès et liaison avec l’application.' },
+  { y: 81, title: 'Batterie', text: 'Batterie plate, logée sous la carte électronique.' },
+];
+
 const iconStroke = 'stroke-current';
 ---
 
@@ -53,42 +64,49 @@ const iconStroke = 'stroke-current';
 
         <div class="mt-12 grid gap-16 md:gap-24">
           <FeatureBlock title="La foule devient le show">
-            <!-- TODO: visuel à valider — photo d'ambiance ou rendu des LED en foule -->
             <img
               slot="visual"
-              src="/product/bracelet-hero.png"
-              width="294"
-              height="336"
-              alt=""
+              src="/product/bracelet-render.webp"
+              width="1254"
+              height="1254"
+              alt="Bracelet Syncwave, bandes LED cyan et magenta allumées"
               loading="lazy"
               decoding="async"
-              class="w-2/3"
             />
             Les bandes lumineuses de chaque bracelet se synchronisent sur la scène. Le public fait partie du
             spectacle, sans rien avoir à faire.
           </FeatureBlock>
 
           <FeatureBlock title="Payer et entrer d’un geste" reverse>
-            <svg slot="visual" viewBox="0 0 96 96" fill="none" class={`size-32 ${iconStroke}`} stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="20" y="30" width="56" height="40" rx="8" />
-              <path d="M20 44h56" />
-              <path d="M56 22a14 14 0 0 1 0 12" />
-              <path d="M62 16a22 22 0 0 1 0 24" />
-            </svg>
+            <img
+              slot="visual"
+              src="/product/paiement.webp"
+              width="1448"
+              height="1086"
+              alt="Poignet avec bracelet Syncwave posé sur un terminal de paiement sans contact"
+              loading="lazy"
+              decoding="async"
+            />
             Le bracelet sert de billet et de moyen de paiement sans contact. Plus de file pour l’entrée, plus
             de monnaie aux buvettes.
           </FeatureBlock>
 
           <FeatureBlock title="Retrouver ses amis, alerter la sécurité">
-            <svg slot="visual" viewBox="0 0 96 96" fill="none" class={`size-32 ${iconStroke}`} stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M48 82s-24-20-24-40a24 24 0 0 1 48 0c0 20-24 40-24 40Z" />
-              <circle cx="48" cy="42" r="8" />
-            </svg>
+            <img
+              slot="visual"
+              src="/product/application.webp"
+              width="1448"
+              height="1086"
+              alt="Main tenant un téléphone affichant la carte du festival avec la position des amis"
+              loading="lazy"
+              decoding="async"
+            />
             L’application localise le groupe sur le site et le bouton SOS prévient les équipes de sécurité, avec la
             position exacte.
           </FeatureBlock>
 
           <FeatureBlock title="Une plateforme, une vision" reverse accent="magenta">
+            <!-- TODO: visuel à produire — capture ou maquette du tableau de bord organisateur -->
             <svg slot="visual" viewBox="0 0 96 96" fill="none" class={`size-32 ${iconStroke}`} stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M16 76h64" />
               <path d="M24 64V44M40 64V32M56 64V50M72 64V24" />
@@ -101,7 +119,24 @@ const iconStroke = 'stroke-current';
       </div>
     </section>
 
-    <!-- 3. Comment ça marche -->
+    <!-- 3. Sous le silicone : vue éclatée -->
+    <section id="sous-le-silicone" class="py-section">
+      <div class="mx-auto max-w-content px-6 md:px-12">
+        <h2 class="text-h1 text-text">Sous le silicone</h2>
+        <p class="mt-6 text-body-lg text-text-muted">Cinq pièces, aucun écran, rien à apprendre.</p>
+        <div class="mt-12">
+          <ExplodedView
+            src="/product/vue-eclatee.webp"
+            width={1086}
+            height={1448}
+            alt="Vue éclatée du bracelet Syncwave : bracelet silicone, bande LED, boîtier, carte électronique, batterie"
+            labels={exploded}
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Comment ça marche -->
     <section id="comment-ca-marche" class="py-section">
       <div class="mx-auto max-w-content px-6 md:px-12">
         <h2 class="text-h1 text-text">Comment ça marche</h2>
@@ -111,7 +146,7 @@ const iconStroke = 'stroke-current';
       </div>
     </section>
 
-    <!-- 4. Caractéristiques -->
+    <!-- 5. Caractéristiques -->
     <section id="caracteristiques" class="py-section">
       <div class="mx-auto max-w-content px-6 md:px-12">
         <h2 class="text-h1 text-text">Caractéristiques</h2>
@@ -125,7 +160,7 @@ const iconStroke = 'stroke-current';
       </div>
     </section>
 
-    <!-- 5. Demander une démo -->
+    <!-- 6. Demander une démo -->
     <section id="demo" class="py-section">
       <div class="mx-auto max-w-content px-6 md:px-12">
         <div class="grid gap-12 md:grid-cols-2 md:gap-8">
@@ -141,7 +176,7 @@ const iconStroke = 'stroke-current';
       </div>
     </section>
 
-    <!-- 6. À propos -->
+    <!-- 7. À propos -->
     <section id="a-propos" class="py-section">
       <div class="mx-auto max-w-content px-6 md:px-12">
         <h2 class="text-h1 text-text">L’équipe Mooroon 5</h2>
@@ -151,6 +186,9 @@ const iconStroke = 'stroke-current';
               <!-- TODO: contenu à valider — présentation de l'équipe, rôle de chacun, contexte du projet -->
               Mooroon 5 est une équipe d’étudiants de l’EPITA. Syncwave est notre projet d’objet connecté :
               un bracelet pensé pour les festivals, les concerts et l’événementiel.
+            </p>
+            <p class="mt-4 text-small text-text-muted">
+              Les visuels de ce site sont générés par IA à partir de la conception du bracelet.
             </p>
           </div>
           <div class="flex items-center justify-center rounded-lg border border-line bg-surface p-8">
