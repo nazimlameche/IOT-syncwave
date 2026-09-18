@@ -1,0 +1,22 @@
+---
+/**
+ * Logo Syncwave : "S" + wordmark — DESIGN.md §2.
+ * TODO: remplacer le tracé placeholder par /public/brand/syncwave-mark.svg définitif.
+ */
+interface Props {
+  class?: string;
+}
+const { class: extra = '' } = Astro.props;
+---
+
+<span class={`inline-flex items-center gap-2 font-display font-bold text-h2 text-text ${extra}`}>
+  <svg viewBox="0 0 100 100" fill="none" aria-hidden="true" class="size-8">
+    <path
+      d="M68 32c0-12-36-14-36 0s36 12 36 30c0 14-36 14-36 2"
+      stroke="currentColor"
+      stroke-width="11"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+  <span>Syncwave</span>
+</span>

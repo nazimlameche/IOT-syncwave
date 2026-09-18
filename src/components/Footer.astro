@@ -1,0 +1,39 @@
+---
+import Logo from './Logo.astro';
+
+const links = [
+  { href: '#fonctionnalites', label: 'Fonctionnalités' },
+  { href: '#comment-ca-marche', label: 'Comment ça marche' },
+  { href: '#caracteristiques', label: 'Caractéristiques' },
+  { href: '#demo', label: 'Demander une démo' },
+  { href: '#a-propos', label: 'À propos' },
+];
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line bg-surface">
+  <div class="mx-auto grid max-w-content gap-12 px-6 py-16 md:grid-cols-3 md:gap-8 md:px-12">
+    <div>
+      <Logo />
+      <p class="mt-4 text-small text-text-muted">Le bracelet connecté des festivals.</p>
+    </div>
+
+    <nav aria-label="Liens de bas de page" class="flex flex-col gap-3 text-small">
+      {
+        links.map((l) => (
+          <a href={l.href} class="text-text decoration-1 decoration-cyan underline-offset-4 hover:underline">
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="text-small text-text-muted">
+      <!-- TODO: remplacer le texte par /brand/mooroon5-mono.svg (blason monochrome) quand l'asset existe, voir DESIGN.md §2 -->
+      <p>Un produit <span class="font-medium text-text">Mooroon 5</span></p>
+      <p class="mt-4">© {year} Mooroon 5. Projet étudiant EPITA.</p>
+      <!-- TODO: mentions légales (éditeur, hébergeur, données du formulaire) -->
+      <p class="mt-2"><a href="#" class="decoration-1 decoration-cyan underline-offset-4 hover:underline">Mentions légales</a></p>
+    </div>
+  </div>
+</footer>

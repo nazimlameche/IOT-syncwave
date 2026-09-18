@@ -1,0 +1,30 @@
+---
+/**
+ * Bloc fonctionnalité — DESIGN.md §5.
+ * Visuel d'un côté, texte de l'autre. `reverse` inverse l'ordre sur desktop.
+ * `accent` : une seule couleur néon par bloc ("cyan" par défaut, "magenta" une fois maximum).
+ */
+interface Props {
+  title: string;
+  reverse?: boolean;
+  accent?: 'cyan' | 'magenta';
+}
+const { title, reverse = false, accent = 'cyan' } = Astro.props;
+const accentText = accent === 'magenta' ? 'text-magenta' : 'text-cyan';
+---
+
+<article class="grid items-center gap-6 md:grid-cols-2 md:gap-8">
+  <div class={`relative ${reverse ? 'md:order-2' : ''}`}>
+    <div
+      class={`flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-line bg-surface md:aspect-4/3 ${accentText}`}
+    >
+      <slot name="visual" />
+    </div>
+  </div>
+  <div class={reverse ? 'md:order-1' : ''}>
+    <h3 class="text-h1 text-text">{title}</h3>
+    <p class="mt-6 text-body text-text-muted">
+      <slot />
+    </p>
+  </div>
+</article>

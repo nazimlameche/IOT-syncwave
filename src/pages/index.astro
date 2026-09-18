@@ -1,0 +1,173 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import FeatureBlock from '../components/FeatureBlock.astro';
+import Steps from '../components/Steps.astro';
+import SpecCard from '../components/SpecCard.astro';
+import DemoForm from '../components/DemoForm.astro';
+import Footer from '../components/Footer.astro';
+
+const steps = [
+  {
+    title: 'Vous équipez vos festivaliers',
+    text: 'Un bracelet Syncwave remis à chaque entrée, associé au billet et au compte de paiement.',
+  },
+  {
+    title: 'Ils vivent l’événement',
+    text: 'Lumière synchronisée, paiement, accès, amis et SOS : tout se passe au poignet.',
+  },
+  {
+    title: 'Vous pilotez en temps réel',
+    text: 'Flux, ventes et alertes remontent sur une seule plateforme pendant l’événement.',
+  },
+];
+
+// TODO: contenu à valider — seules la valeur « 7 € » vient du support de présentation.
+const specs = [
+  { value: '7 €', label: 'par personne, tout compris', highlight: true },
+  { value: '—', label: 'Autonomie sur un festival de 3 jours' }, // TODO: autonomie réelle (heures ou jours)
+  { value: '—', label: 'Étanchéité' }, // TODO: indice IP
+  { value: '—', label: 'Connectivité (NFC, Bluetooth…)' }, // TODO: technologies embarquées
+];
+
+const iconStroke = 'stroke-current';
+---
+
+<Layout
+  title="Syncwave — le bracelet connecté des festivals"
+  description="Syncwave réunit lumière, paiement sans contact, contrôle d'accès, localisation des amis et SOS dans un seul bracelet, avec une plateforme unique pour les organisateurs."
+>
+  <Header />
+
+  <main id="contenu">
+    <Hero />
+
+    <!-- 2. Fonctionnalités : 4 blocs alternés, cyan par défaut, magenta sur le dernier -->
+    <section id="fonctionnalites" class="py-section">
+      <div class="mx-auto max-w-content px-6 md:px-12">
+        <h2 class="text-h1 text-text">Des festivals plus vivants, sécurisés et intelligents</h2>
+        <p class="mt-6 text-body-lg text-text-muted">
+          Chaque fonction remplace un prestataire, un contrat et une facture.
+        </p>
+
+        <div class="mt-12 grid gap-16 md:gap-24">
+          <FeatureBlock title="La foule devient le show">
+            <!-- TODO: visuel à valider — photo d'ambiance ou rendu des LED en foule -->
+            <img
+              slot="visual"
+              src="/product/bracelet-hero.png"
+              width="294"
+              height="336"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              class="w-2/3"
+            />
+            Les bandes lumineuses de chaque bracelet se synchronisent sur la scène. Le public fait partie du
+            spectacle, sans rien avoir à faire.
+          </FeatureBlock>
+
+          <FeatureBlock title="Payer et entrer d’un geste" reverse>
+            <svg slot="visual" viewBox="0 0 96 96" fill="none" class={`size-32 ${iconStroke}`} stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="20" y="30" width="56" height="40" rx="8" />
+              <path d="M20 44h56" />
+              <path d="M56 22a14 14 0 0 1 0 12" />
+              <path d="M62 16a22 22 0 0 1 0 24" />
+            </svg>
+            Le bracelet sert de billet et de moyen de paiement sans contact. Plus de file pour l’entrée, plus
+            de monnaie aux buvettes.
+          </FeatureBlock>
+
+          <FeatureBlock title="Retrouver ses amis, alerter la sécurité">
+            <svg slot="visual" viewBox="0 0 96 96" fill="none" class={`size-32 ${iconStroke}`} stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M48 82s-24-20-24-40a24 24 0 0 1 48 0c0 20-24 40-24 40Z" />
+              <circle cx="48" cy="42" r="8" />
+            </svg>
+            L’application localise le groupe sur le site et le bouton SOS prévient les équipes de sécurité, avec la
+            position exacte.
+          </FeatureBlock>
+
+          <FeatureBlock title="Une plateforme, une vision" reverse accent="magenta">
+            <svg slot="visual" viewBox="0 0 96 96" fill="none" class={`size-32 ${iconStroke}`} stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 76h64" />
+              <path d="M24 64V44M40 64V32M56 64V50M72 64V24" />
+            </svg>
+            Cinq contrats et cinq factures aujourd’hui. Demain, une seule plateforme, une vue d’ensemble, et
+            une IA qui vous aide à anticiper les flux.
+            <!-- TODO: contenu à valider — préciser ce que fait réellement l'IA (prévision des flux ? détection d'incidents ?) -->
+          </FeatureBlock>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Comment ça marche -->
+    <section id="comment-ca-marche" class="py-section">
+      <div class="mx-auto max-w-content px-6 md:px-12">
+        <h2 class="text-h1 text-text">Comment ça marche</h2>
+        <div class="mt-12">
+          <Steps steps={steps} />
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Caractéristiques -->
+    <section id="caracteristiques" class="py-section">
+      <div class="mx-auto max-w-content px-6 md:px-12">
+        <h2 class="text-h1 text-text">Caractéristiques</h2>
+        <p class="mt-6 text-body-lg text-text-muted">
+          Un prix par festivalier.
+          <!-- TODO: contenu à valider — ce que couvre exactement le prix, et les caractéristiques techniques du bracelet -->
+        </p>
+        <div class="mt-12 grid gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-4">
+          {specs.map((s) => <SpecCard value={s.value} label={s.label} highlight={s.highlight} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Demander une démo -->
+    <section id="demo" class="py-section">
+      <div class="mx-auto max-w-content px-6 md:px-12">
+        <div class="grid gap-12 md:grid-cols-2 md:gap-8">
+          <div>
+            <h2 class="text-h1 text-text">Parlons de votre prochain événement</h2>
+            <p class="mt-6 text-body-lg text-text-muted">
+              Dites-nous où et quand. Nous revenons vers vous avec une démonstration du bracelet et de la
+              plateforme.
+            </p>
+          </div>
+          <DemoForm />
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. À propos -->
+    <section id="a-propos" class="py-section">
+      <div class="mx-auto max-w-content px-6 md:px-12">
+        <h2 class="text-h1 text-text">L’équipe Mooroon 5</h2>
+        <div class="mt-12 grid items-center gap-12 md:grid-cols-3 md:gap-8">
+          <div class="md:col-span-2">
+            <p class="text-body text-text-muted">
+              <!-- TODO: contenu à valider — présentation de l'équipe, rôle de chacun, contexte du projet -->
+              Mooroon 5 est une équipe d’étudiants de l’EPITA. Syncwave est notre projet d’objet connecté :
+              un bracelet pensé pour les festivals, les concerts et l’événementiel.
+            </p>
+          </div>
+          <div class="flex items-center justify-center rounded-lg border border-line bg-surface p-8">
+            <img
+              src="/brand/mooroon5-full.png"
+              width="227"
+              height="192"
+              alt="Blason Mooroon 5"
+              loading="lazy"
+              decoding="async"
+              class="w-full max-w-logo"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

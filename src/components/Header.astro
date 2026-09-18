@@ -1,0 +1,68 @@
+---
+import Button from './Button.astro';
+import Logo from './Logo.astro';
+
+const links = [
+  { href: '#fonctionnalites', label: 'Fonctionnalités' },
+  { href: '#comment-ca-marche', label: 'Comment ça marche' },
+  { href: '#caracteristiques', label: 'Caractéristiques' },
+  { href: '#a-propos', label: 'À propos' },
+];
+---
+
+<header class="fixed inset-x-0 top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-md">
+  <div class="mx-auto flex max-w-content items-center justify-between px-6 py-4 md:px-12">
+    <a href="#" aria-label="Syncwave, retour en haut de page"><Logo /></a>
+
+    <nav aria-label="Navigation principale" class="hidden items-center gap-8 md:flex">
+      {
+        links.map((l) => (
+          <a
+            href={l.href}
+            class="text-text decoration-1 decoration-cyan underline-offset-4 transition-colors duration-fast hover:underline"
+          >
+            {l.label}
+          </a>
+        ))
+      }
+      <!-- Secondaire : le bouton primaire du hero est déjà visible sur le même écran (DESIGN.md §5 Bouton) -->
+      <Button href="#demo" variant="secondary">Demander une démo</Button>
+    </nav>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      class="rounded-pill border border-line px-4 py-2 text-small md:hidden"
+      aria-expanded="false"
+      aria-controls="menu-mobile"
+    >
+      Menu
+    </button>
+  </div>
+
+  <div
+    id="menu-mobile"
+    hidden
+    class="absolute inset-x-0 top-full z-30 flex h-dvh flex-col gap-8 bg-bg px-6 py-12 md:hidden"
+  >
+    <nav aria-label="Navigation mobile" class="flex flex-col gap-6 text-h2 font-display font-semibold">
+      {links.map((l) => <a href={l.href} data-menu-link>{l.label}</a>)}
+    </nav>
+    <Button href="#demo" class="self-start">Demander une démo</Button>
+  </div>
+</header>
+
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('menu-mobile');
+  const setOpen = (open: boolean) => {
+    if (!toggle || !menu) return;
+    menu.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.textContent = open ? 'Fermer' : 'Menu';
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  toggle?.addEventListener('click', () => setOpen(menu?.hidden ?? true));
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+</script>

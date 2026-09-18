@@ -1,0 +1,35 @@
+---
+/**
+ * Bouton — DESIGN.md §5.
+ * variant : "primary" (un seul visible par écran) | "secondary" | "link"
+ */
+interface Props {
+  href?: string;
+  type?: 'button' | 'submit';
+  variant?: 'primary' | 'secondary' | 'link';
+  class?: string;
+}
+const { href, type = 'button', variant = 'primary', class: extra = '' } = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center font-medium transition-[color,box-shadow,border-color,filter] duration-fast ease-out-token';
+const variants = {
+  primary: 'bg-wave text-bg rounded-pill px-7 py-3.5 hover:glow-cyan hover:brightness-105',
+  secondary:
+    'bg-transparent text-text border border-line rounded-pill px-7 py-3.5 hover:border-cyan/40',
+  link: 'text-text underline-offset-4 decoration-1 decoration-cyan hover:underline',
+};
+const cls = `${base} ${variants[variant]} ${extra}`;
+---
+
+{
+  href ? (
+    <a href={href} class={cls}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={cls}>
+      <slot />
+    </button>
+  )
+}

@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Button from '../components/Button.astro';
+---
+
+<Layout title="Merci — Syncwave" description="Votre demande de démo Syncwave est enregistrée.">
+  <Header />
+  <main id="contenu" class="pt-32 md:pt-40">
+    <section class="py-section">
+      <div class="mx-auto max-w-content px-6 md:px-12">
+        <h1 class="text-h1 text-text">Votre demande de démo est enregistrée.</h1>
+        <p class="mt-6 text-body-lg text-text-muted">Nous revenons vers vous sous quelques jours.</p>
+        <div class="mt-8">
+          <Button href="/" variant="secondary">Retour à l’accueil</Button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
