@@ -52,6 +52,7 @@
 
   /* Conteneur et largeurs — DESIGN.md §3.3, §2 */
   --container-content: 72rem;
+  --container-card: 60rem; /* cartes de section compactes — DESIGN.md §5 */
   --container-prose: 36rem;
   --container-logo: 10rem; /* 160 px max pour le logo Mooroon 5 couleur */
 }
@@ -99,7 +100,8 @@ p { max-width: 36rem; }
 /* Îlot HeroWordmark — DESIGN.md §4 bis. Hauteur réservée (pas de décalage de mise en page) pour le mot
    et son orbite d'icônes ; le mot est plus petit que --text-display pour laisser la place à l'orbite. */
 .hero-wordmark {
-  --wordmark-height: calc(var(--text-display) * 0.9);
+  /* Grand mot, borné sur mobile pour que l'orbite (7 × la hauteur du mot) tienne dans l'écran */
+  --wordmark-height: min(calc(var(--text-display) * 1.4), calc((100vw - 3rem) / 7));
   --orbit-size: calc(var(--wordmark-height) * 7);
   position: relative;
   display: flex;
@@ -115,6 +117,183 @@ p { max-width: 36rem; }
   translate: -50% -50%;
 }
 
+/* Pied de page : logo dans son anneau de texte (CircularText) et « Syncwave » qui se dessine — DESIGN.md §5 */
+.footer-logo { width: 6rem; height: 6rem; }
+.circular-text.footer-ring {
+  width: 6rem;
+  height: 6rem;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.circular-text.footer-ring span { font-size: 0.75rem; }
+.footer-wordmark { display: block; width: 10rem; }
+
+/* Équipe : cartes de profil (ProfileCard) plus compactes, trois par ligne sur desktop — DESIGN.md §5 Équipe */
+.team-list .pc-card { height: auto; max-height: none; width: min(18rem, 80vw); }
+/* Survol plus sobre que le réglage React Bits : halo, reflet holographique et éblouissement atténués */
+.team-list .pc-behind { opacity: calc(0.3 * var(--card-opacity)); }
+.team-list .pc-card:hover .pc-shine,
+.team-list .pc-card.active .pc-shine { filter: brightness(0.6) contrast(1.2) saturate(0.5); }
+.team-list .pc-card:hover .pc-shine::before,
+.team-list .pc-card.active .pc-shine::before,
+.team-list .pc-card:hover .pc-shine::after,
+.team-list .pc-card.active .pc-shine::after { opacity: 0.35; }
+.team-list .pc-glare { opacity: 0.45; }
+.footer-wordmark .stroke-text__svg { height: 3rem; }
+
+/* ------------------------------------------------------------------
+   Récit en cartes empilées (StoryStack / StoryCard) — DESIGN.md §4 et §5 Récit
+   ------------------------------------------------------------------ */
+.story {
+  --story-top: 1.5rem;        /* position figée de la première carte */
+  --story-peek: 0.875rem;     /* décalage entre deux cartes empilées : le bord des chapitres passés reste visible */
+  --story-dwell: 40svh;       /* défilement entre deux cartes : le temps de lire le chapitre */
+  --story-step: 3.5%;         /* recul d'une carte par carte posée dessus */
+  --story-shade: 0.22;        /* assombrissement d'une carte par carte posée dessus */
+  --story-stagger: 140ms;     /* décalage entre les éléments d'un moment animé */
+}
+.story-deck { display: flex; flex-direction: column; gap: 1rem; }
+@media (min-width: 768px) {
+  .story-deck { gap: var(--story-dwell); padding-bottom: 30svh; }
+  .story-slot { position: sticky; top: calc(var(--story-top) + var(--i) * var(--story-peek)); }
+}
+/* Recul et assombrissement pilotés par --story-depth (0 = carte au premier plan) */
+.story-card {
+  transform-origin: 50% 0;
+  transform: scale(calc(1 - min(var(--story-depth, 0), 3) * var(--story-step)));
+  opacity: calc(1 - max(var(--story-depth, 0) - 3, 0));
+}
+.story-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: var(--color-bg);
+  opacity: calc(min(var(--story-depth, 0), 3) * var(--story-shade));
+}
+
+/* Les moments animés partent de leur état initial seulement une fois le script prêt (sans JS : état final),
+   et seulement pour les chapitres pas encore atteints. Un chapitre passé reste dans son état final. */
+/* 1. Le constat : cinq prestataires barrés, puis un seul bracelet */
+.story-chips { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.story-chip {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  padding: 0.5rem 1rem;
+  color: var(--color-text);
+  text-decoration: line-through;
+  text-decoration-color: var(--color-magenta);
+  opacity: 0.4;
+  transition: opacity var(--duration-slow) var(--ease-out) calc(var(--k) * var(--story-stagger) + 300ms),
+    text-decoration-color var(--duration-slow) var(--ease-out) calc(var(--k) * var(--story-stagger) + 300ms);
+}
+.story-chip--one {
+  opacity: 1;
+  text-decoration: none;
+  border-color: transparent;
+  background-image: var(--gradient-wave);
+  color: var(--color-bg);
+  font-weight: 500;
+  transform: scale(1);
+  transition: opacity var(--duration-slow) var(--ease-out) 1100ms, transform var(--duration-slow) var(--ease-out) 1100ms;
+}
+.story[data-ready] .story-slot:not(.is-active, .is-past) .story-chip { opacity: 1; text-decoration-color: transparent; }
+.story[data-ready] .story-slot:not(.is-active, .is-past) .story-chip--one { opacity: 0; transform: scale(0.9); }
+
+/* 3. La préparation : les étapes se cochent une à une */
+.story-ticks path { stroke-dasharray: 20; stroke-dashoffset: 0; transition: stroke-dashoffset var(--duration-slow) var(--ease-out) calc(var(--k) * var(--story-stagger) * 3 + 200ms); }
+.story[data-ready] .story-slot:not(.is-active, .is-past) .story-ticks path { stroke-dashoffset: 20; }
+
+/* 4. Ouverture des portes : l'anneau se trace, la coche apparaît, « Accès validé » */
+.story-gate circle.story-gate__ring { stroke-dasharray: 283; stroke-dashoffset: 0; transition: stroke-dashoffset var(--duration-slow) var(--ease-out) 200ms; }
+.story-gate path { stroke-dasharray: 60; stroke-dashoffset: 0; transition: stroke-dashoffset var(--duration-base) var(--ease-out) 1000ms; }
+.story-gate__label { opacity: 1; transition: opacity var(--duration-slow) var(--ease-out) 1250ms; }
+.story[data-ready] .story-slot:not(.is-active, .is-past) .story-gate circle.story-gate__ring { stroke-dashoffset: 283; }
+.story[data-ready] .story-slot:not(.is-active, .is-past) .story-gate path { stroke-dashoffset: 60; }
+.story[data-ready] .story-slot:not(.is-active, .is-past) .story-gate__label { opacity: 0; }
+.story-slot.is-active .story-gate svg { animation: story-glow var(--pulse-period) ease-in-out 1500ms infinite; }
+@keyframes story-glow { 0%, 100% { filter: drop-shadow(0 0 0 transparent); } 50% { filter: drop-shadow(0 0 12px var(--color-cyan)); } }
+
+/* « Et si… » : vue éclatée 2,5D, pilotée au scroll par --story-explode (0 assemblé → 1 éclaté) */
+.eclate-layer {
+  transform: translateY(calc(var(--dy) * (1 - var(--story-explode, 1)) * 1%));
+  will-change: transform;
+}
+.eclate-layer[data-inner] { opacity: min(1, calc(var(--story-explode, 1) * 2.5)); }
+.story-slot.is-active .eclate-layer { animation: eclate-float 5s ease-in-out calc(var(--k) * -1s) infinite; }
+@keyframes eclate-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -0.6%; } }
+.eclate-tag {
+  position: absolute;
+  right: 2%;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-cyan);
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  z-index: 10;
+  opacity: clamp(0, calc((var(--story-explode, 1) - 0.75 - var(--k) * 0.04) * 8), 1);
+}
+
+/* Scènes animées en SVG (PayMotion, CrowdMotion, SosMotion) : boucles jouées tant que le chapitre est actif.
+   Hors animation, chaque scène montre son état final (paiement validé, foule allumée, équipe arrivée). */
+.motion-pay .pay-ok, .motion-pay .pay-idle, .motion-sos .sos-alert { transform-box: fill-box; transform-origin: center; }
+.motion-pay .pay-idle { opacity: 0; }
+.motion-pay .pay-wave { opacity: 0; }
+.story-slot.is-active .motion-pay .pay-wrist { animation: pay-wrist 4.8s var(--ease-out) infinite; }
+.story-slot.is-active .motion-pay .pay-idle { animation: pay-idle 4.8s linear infinite; }
+.story-slot.is-active .motion-pay .pay-ok { animation: pay-ok 4.8s var(--ease-out) infinite; }
+.story-slot.is-active .motion-pay .pay-wave { animation: pay-wave 4.8s linear calc(var(--k) * 150ms) infinite; }
+.story-slot.is-active .motion-pay .pay-led { animation: pay-led 4.8s linear infinite; }
+@keyframes pay-wrist { 0% { transform: translateX(-36px); } 22%, 82% { transform: translateX(0); } 100% { transform: translateX(-36px); } }
+@keyframes pay-idle { 0%, 40% { opacity: 1; } 46%, 90% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes pay-ok { 0%, 42% { opacity: 0; transform: scale(0.8); } 50%, 86% { opacity: 1; transform: scale(1); } 94%, 100% { opacity: 0; transform: scale(1); } }
+@keyframes pay-wave { 0%, 20% { opacity: 0; } 28% { opacity: 1; } 40%, 100% { opacity: 0; } }
+@keyframes pay-led { 0%, 44% { opacity: 0.35; } 50%, 86% { opacity: 1; } 100% { opacity: 0.35; } }
+
+.motion-crowd .crowd-dot { fill: var(--dot); }
+.story-slot.is-active .motion-crowd .crowd-dot { animation: crowd-dot 3s ease-in-out var(--d) infinite; }
+@keyframes crowd-dot { 0%, 100% { fill: var(--color-surface-2); } 12%, 30% { fill: var(--dot); } 45% { fill: var(--color-surface-2); } }
+.motion-crowd .crowd-beam { transform-box: view-box; transform-origin: 50% 17%; }
+.story-slot.is-active .motion-crowd .crowd-beam { animation: crowd-beam 5s ease-in-out calc(var(--k) * -1.6s) infinite; }
+@keyframes crowd-beam { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+
+.motion-sos .sos-ring { transform-box: fill-box; transform-origin: center; opacity: 0; }
+.motion-sos .sos-route { opacity: 0.35; }
+.story-slot.is-active .motion-sos .sos-ring { animation: sos-ring 1.8s var(--ease-out) calc(var(--k) * 0.9s) infinite; }
+.story-slot.is-active .motion-sos .sos-team { animation: sos-team 5.4s var(--ease-out) infinite; }
+.story-slot.is-active .motion-sos .sos-alert { animation: sos-alert 5.4s var(--ease-out) infinite; }
+.story-slot.is-active .motion-sos .sos-route { stroke-dashoffset: 0; animation: sos-route 5.4s linear infinite; }
+@keyframes sos-ring { from { transform: scale(1); opacity: 0.9; } to { transform: scale(4.5); opacity: 0; } }
+@keyframes sos-team {
+  0%, 15% { transform: translate(-230px, 86px); }
+  40% { transform: translate(-110px, 86px); }
+  58% { transform: translate(-110px, 0); }
+  80%, 100% { transform: translate(0, 0); }
+}
+@keyframes sos-alert { 0%, 4% { opacity: 0; transform: scale(0.85); } 10%, 88% { opacity: 1; transform: scale(1); } 96%, 100% { opacity: 0; } }
+@keyframes sos-route { 0%, 12% { opacity: 0; } 18%, 85% { opacity: 0.6; } 100% { opacity: 0; } }
+
+/* 8. La régie : les barres du tableau de bord montent */
+.story-bars span { transform-origin: 50% 100%; transform: scaleY(1); transition: transform var(--duration-slow) var(--ease-out) calc(var(--k) * 90ms + 200ms); }
+.story[data-ready] .story-slot:not(.is-active, .is-past) .story-bars span { transform: scaleY(0.05); }
+
+/* 9. Le bilan : « 5 factures » se barre, « 1 facture » apparaît */
+.story-invoice__old { position: relative; color: var(--color-text-muted); }
+.story-invoice__old::after { content: ""; position: absolute; left: 0; top: 55%; height: 3px; width: 100%; background: var(--color-magenta); transition: width var(--duration-slow) var(--ease-out) 300ms; }
+.story-invoice__new { opacity: 1; transform: translateY(0); transition: opacity var(--duration-slow) var(--ease-out) 900ms, transform var(--duration-slow) var(--ease-out) 900ms; }
+.story[data-ready] .story-slot:not(.is-active, .is-past) .story-invoice__old::after { width: 0; }
+.story[data-ready] .story-slot:not(.is-active, .is-past) .story-invoice__new { opacity: 0; transform: translateY(0.75rem); }
+
 /* Header masquable — DESIGN.md §4.4 et §5 Header. La transition n'est activée qu'après le premier calcul. */
 .site-header[data-animate] { transition: transform var(--duration-header) var(--ease-in-out); }
 .site-header[data-hidden] { transform: translateY(-100%); }
@@ -127,6 +306,10 @@ p { max-width: 36rem; }
    Hérite de l'interlignage et de l'approche du parent, et reste plié tant que l'îlot n'a pas animé. */
 .fold-text.card-text { line-height: inherit; letter-spacing: inherit; }
 .card-text .fold-text-piece { opacity: 0; }
+/* FoldText écrit les espaces en insécables : en début de ligne ils créent un retrait.
+   On les masque et on espace les mots par une marge (le retour à la ligne se fait entre les mots). */
+.card-text .fold-text-whitespace { display: none; }
+.card-text .fold-text-segment { margin-inline-end: 0.28em; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

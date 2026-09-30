@@ -1,0 +1,88 @@
+---
+/**
+ * Récit en cartes empilées — DESIGN.md §5 Récit et §4.
+ * Chaque chapitre (StoryCard) se fige en haut de l'écran ; le suivant vient le recouvrir, celui du dessous
+ * recule et s'assombrit.
+ */
+interface Props {
+  id?: string;
+  title: string;
+  intro: string;
+}
+const { id, title, intro } = Astro.props;
+import Fold from './Fold.astro';
+---
+
+<section id={id} class="story mx-auto max-w-content px-3 md:px-4" data-story>
+  <div class="px-3 pb-12 md:px-8">
+    <Fold as="h2" text={title} class="text-h1 text-text" />
+    <Fold text={intro} class="mt-4 text-body-lg text-text-muted" />
+  </div>
+
+  <div class="story-deck mx-auto max-w-card">
+    <slot />
+  </div>
+</section>
+
+<script>
+  /**
+   * Pile du récit : pour chaque carte, « couverture » = part du chemin parcouru par la carte depuis le bas de
+   * l'écran jusqu'à sa position figée (0 → 1). La profondeur d'une carte est la somme des couvertures des
+   * cartes suivantes : elle pilote le recul et l'assombrissement (CSS, --story-depth).
+   * La carte active (dernière couverte à plus de ACTIVE_AT) reçoit .is-active, les précédentes .is-past.
+   * --story-explode (0 → 1, lissé) suit la montée de chaque carte : il ouvre la vue éclatée.
+   */
+  const ACTIVE_AT = 0.5;
+  /** Sur mobile, pas d'empilement : une carte est active quand son haut passe ce point de l'écran. */
+  const MOBILE_ACTIVE_LINE = 0.35;
+  /** Couverture à partir de laquelle la vue éclatée commence à s'ouvrir (elle est complète quand la carte est en place). */
+  const EXPLODE_FROM = 0.25;
+
+  function initStory() {
+    const root = document.querySelector<HTMLElement>('[data-story]');
+    if (!root) return;
+    const slots = [...root.querySelectorAll<HTMLElement>('[data-story-slot]')];
+    const stacking = window.matchMedia('(min-width: 768px)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const vh = window.innerHeight;
+      const stacked = stacking.matches;
+      const coverage = slots.map((slot) => {
+        const top = slot.getBoundingClientRect().top;
+        const stickyTop = stacked ? parseFloat(getComputedStyle(slot).top) || 0 : vh * MOBILE_ACTIVE_LINE;
+        return Math.min(1, Math.max(0, (vh - top) / Math.max(vh - stickyTop, 1)));
+      });
+      let active = -1;
+      coverage.forEach((c, i) => {
+        if (c >= ACTIVE_AT) active = i;
+      });
+      let depth = 0;
+      for (let i = slots.length - 1; i >= 0; i--) {
+        const slot = slots[i];
+        // Éclatement de la vue 2,5D : se joue pendant que la carte monte prendre sa place.
+        const t = Math.min(1, Math.max(0, (coverage[i] - EXPLODE_FROM) / (1 - EXPLODE_FROM)));
+        const explode = reducedMotion.matches ? 1 : t * t * (3 - 2 * t);
+        slot.style.setProperty('--story-explode', explode.toFixed(3));
+        slot.style.setProperty('--story-depth', stacked && !reducedMotion.matches ? depth.toFixed(3) : '0');
+        depth += coverage[i];
+        slot.classList.toggle('is-active', i === active);
+        slot.classList.toggle('is-past', i < active);
+      }
+    };
+
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    stacking.addEventListener('change', schedule);
+    update();
+    // Les états « avant animation » ne s'appliquent qu'une fois le script prêt : sans JS, tout est visible.
+    root.setAttribute('data-ready', '');
+  }
+
+  initStory();
+</script>

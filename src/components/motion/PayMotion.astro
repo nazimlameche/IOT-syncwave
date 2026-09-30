@@ -1,0 +1,40 @@
+---
+/**
+ * 21:00, les bars — DESIGN.md §5 Récit. Le poignet approche du terminal, des ondes NFC partent du bracelet,
+ * l'écran passe de l'icône sans contact à « Payé ». Boucle tant que le chapitre est actif.
+ * État de base (sans animation) : paiement validé.
+ */
+---
+
+<svg viewBox="0 0 400 300" class="motion-pay block aspect-4/3 w-full bg-bg" role="img" aria-label="Un bracelet Syncwave approché d'un terminal de paiement, qui affiche Payé">
+  <!-- Terminal -->
+  <rect x="248" y="58" width="116" height="184" rx="18" class="fill-surface-2 stroke-line" stroke-width="2" />
+  <rect x="262" y="74" width="88" height="80" rx="10" class="fill-bg" />
+  <g class="pay-idle stroke-text-muted" fill="none" stroke-width="3" stroke-linecap="round">
+    <path d="M296 104a16 16 0 0 1 0 20" />
+    <path d="M304 97a26 26 0 0 1 0 34" />
+    <path d="M312 90a36 36 0 0 1 0 48" />
+  </g>
+  <g class="pay-ok">
+    <circle cx="306" cy="106" r="18" class="fill-cyan" />
+    <path d="M297 106l6 6 12-12" fill="none" class="stroke-bg" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="306" y="144" text-anchor="middle" class="fill-text font-display" font-size="13" font-weight="700">Payé</text>
+  </g>
+  {[0, 1, 2].map((r) => [0, 1, 2].map((c) => <circle cx={282 + c * 24} cy={180 + r * 20} r="6" class="fill-line" />))}
+
+  <!-- Poignet et bracelet -->
+  <g class="pay-wrist">
+    <path d="M-10 128 H150 a30 30 0 0 1 0 60 H-10 Z" class="fill-surface-2" />
+    <rect x="96" y="120" width="44" height="76" rx="12" class="fill-bg stroke-line" stroke-width="2" />
+    <rect x="102" y="128" width="32" height="60" rx="9" class="fill-surface-2" />
+    <text x="118" y="164" text-anchor="middle" class="fill-text-muted font-display" font-size="18" font-weight="700">S</text>
+    <rect x="93" y="126" width="3" height="64" rx="1.5" class="pay-led fill-cyan" />
+  </g>
+
+  <!-- Ondes NFC -->
+  <g class="stroke-cyan" fill="none" stroke-width="3" stroke-linecap="round">
+    <path class="pay-wave" style="--k: 0" d="M196 142a22 22 0 0 1 0 32" />
+    <path class="pay-wave" style="--k: 1" d="M208 132a36 36 0 0 1 0 52" />
+    <path class="pay-wave" style="--k: 2" d="M220 122a50 50 0 0 1 0 72" />
+  </g>
+</svg>

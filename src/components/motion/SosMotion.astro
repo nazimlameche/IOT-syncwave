@@ -1,0 +1,52 @@
+---
+/**
+ * 01:00, une alerte — DESIGN.md §5 Récit. Plan du festival : un festivalier déclenche SOS (signal magenta),
+ * l'alerte s'affiche, une équipe de sécurité suit le chemin jusqu'à lui ; ses amis sont localisés à côté.
+ * Boucle tant que le chapitre est actif. État de base (sans animation) : l'équipe est arrivée.
+ */
+---
+
+<svg viewBox="0 0 400 300" class="motion-sos block aspect-4/3 w-full bg-bg" role="img" aria-label="Plan du festival : une alerte SOS localisée et une équipe de sécurité qui la rejoint">
+  <!-- Allées -->
+  <g class="stroke-surface-2" stroke-width="14" stroke-linecap="round" fill="none">
+    <path d="M40 262 H330" />
+    <path d="M180 262 V60" />
+    <path d="M180 176 H330" />
+  </g>
+  <!-- Zones -->
+  <rect x="34" y="34" width="118" height="70" rx="12" class="fill-surface-2" />
+  <text x="93" y="74" text-anchor="middle" class="fill-text-muted" font-size="12">Scène</text>
+  <rect x="210" y="34" width="120" height="58" rx="12" class="fill-surface-2" />
+  <text x="270" y="68" text-anchor="middle" class="fill-text-muted" font-size="12">Bars</text>
+  <rect x="34" y="140" width="118" height="84" rx="12" class="fill-surface-2" />
+  <text x="93" y="186" text-anchor="middle" class="fill-text-muted" font-size="12">Camping</text>
+
+  <!-- Trajet de l'équipe -->
+  <path d="M60 262 H180 V176 H290" fill="none" class="sos-route stroke-cyan" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round" />
+
+  <!-- Amis -->
+  <g class="fill-cyan">
+    <circle cx="310" cy="206" r="5" />
+    <circle cx="326" cy="196" r="5" />
+    <circle cx="318" cy="220" r="5" />
+  </g>
+
+  <!-- SOS -->
+  <g class="sos-point">
+    <circle cx="290" cy="176" r="8" class="sos-ring fill-none stroke-magenta" stroke-width="2" style="--k: 0" />
+    <circle cx="290" cy="176" r="8" class="sos-ring fill-none stroke-magenta" stroke-width="2" style="--k: 1" />
+    <circle cx="290" cy="176" r="8" class="fill-magenta" />
+  </g>
+
+  <!-- Équipe de sécurité -->
+  <g class="sos-team">
+    <circle cx="290" cy="176" r="7" class="fill-text" />
+  </g>
+
+  <!-- Alerte -->
+  <g class="sos-alert">
+    <rect x="214" y="112" width="152" height="40" rx="10" class="fill-bg stroke-magenta" stroke-width="1.5" />
+    <text x="230" y="137" class="fill-magenta font-display" font-size="13" font-weight="700">SOS</text>
+    <text x="266" y="137" class="fill-text" font-size="12">Près des bars</text>
+  </g>
+</svg>

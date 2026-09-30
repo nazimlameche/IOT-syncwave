@@ -1,0 +1,47 @@
+---
+/**
+ * Vue éclatée en 2,5D — DESIGN.md §5 Récit (chapitre « Et si… »).
+ * Cinq calques détourés de vue-eclatee.webp, superposés à l'identique. Assemblés, ils se rejoignent dans le
+ * logement du bracelet (les pièces internes sont masquées sous le boîtier) ; ils se séparent au scroll à mesure
+ * que la carte prend sa place (--story-explode, 0 → 1, posé par StoryStack), puis flottent doucement.
+ * Positions verticales mesurées sur l'image : centre de chaque pièce en % de la hauteur.
+ */
+const ASSEMBLED_AT = 37.5; // centre du logement du module sur le bracelet, en % de la hauteur
+const parts = [
+  { id: 'bracelet', name: 'Bracelet silicone', center: 25.3, z: 0, inner: false, order: 1 },
+  { id: 'batterie', name: 'Batterie', center: 80.8, z: 1, inner: true, order: 5 },
+  { id: 'carte', name: 'Carte électronique et antenne NFC', center: 68.4, z: 2, inner: true, order: 4 },
+  { id: 'led', name: 'Bande LED', center: 47.3, z: 3, inner: true, order: 2 },
+  { id: 'boitier', name: 'Boîtier', center: 56.6, z: 4, inner: false, order: 3 },
+];
+const tags = [...parts].sort((a, b) => a.order - b.order);
+---
+
+<div
+  class="eclate relative aspect-3/4 bg-bg"
+  role="img"
+  aria-label="Vue éclatée du bracelet Syncwave : bracelet silicone, bande LED, boîtier, carte électronique et antenne NFC, batterie"
+>
+  {
+    parts.map((p) => (
+      <img
+        src={`/product/eclate/${p.id}.webp`}
+        width="724"
+        height="965"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="eclate-layer absolute inset-0 h-full w-full"
+        style={`--dy: ${p.id === 'bracelet' ? 0 : ASSEMBLED_AT - p.center}; --k: ${p.order}; z-index: ${p.z}`}
+        data-inner={p.inner ? '' : undefined}
+      />
+    ))
+  }
+  {
+    tags.map((p, i) => (
+      <span class="eclate-tag" style={`top: ${p.center}%; --k: ${i}`} aria-hidden="true">
+        {String(i + 1).padStart(2, '0')}
+      </span>
+    ))
+  }
+</div>

@@ -4,13 +4,18 @@ import CardText from './react/CardText.jsx';
 /**
  * Texte de carte qui se déplie (îlot CardText / FoldText) — DESIGN.md §5 Carte de section.
  * Le texte est rendu côté serveur (SEO, sans JS via <noscript> dans Layout) et plié à l'hydratation.
+ * `split="line"` : le texte se déplie d'un seul bloc (phrases à retenir du récit). Il se coupe alors
+ * normalement et les espaces insécables devant « ? ! : ; » sont respectés.
  */
 interface Props {
   text: string;
   as?: 'h2' | 'h3' | 'p';
   class?: string;
+  split?: 'word' | 'line';
 }
-const { text, as: Tag = 'p', class: extra = '' } = Astro.props;
+const { text, as: Tag = 'p', class: extra = '', split } = Astro.props;
+// Typographie française : espace insécable devant la ponctuation haute (utile en découpage par ligne)
+const typeset = split === 'line' ? text.replace(/ ([?!:;»])/g, '\u00A0$1') : text;
 ---
 
-<Tag class={extra}><CardText client:idle text={text} /></Tag>
+<Tag class={extra}><CardText client:idle text={typeset} splitBy={split} /></Tag>

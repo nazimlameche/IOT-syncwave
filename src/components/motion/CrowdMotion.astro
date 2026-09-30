@@ -1,0 +1,41 @@
+---
+/**
+ * 23:00, la tête d'affiche — DESIGN.md §5 Récit. Une scène, des faisceaux, et une foule de bracelets
+ * (points) qui s'allument par vagues depuis la scène, cyan et magenta. Boucle tant que le chapitre est actif.
+ * État de base (sans animation) : toute la foule allumée.
+ */
+const ROWS = 7;
+const dots: { x: number; y: number; r: number; color: string; delay: number }[] = [];
+for (let i = 0; i < ROWS; i++) {
+  const y = 128 + i * 22 + i * i * 1.6;
+  const count = 11 + i * 2;
+  const width = 200 + i * 30;
+  const r = 2.6 + i * 0.75;
+  for (let c = 0; c < count; c++) {
+    const x = 200 - width / 2 + (width * c) / (count - 1);
+    const color = (c + i) % 3 === 0 ? 'var(--color-magenta)' : 'var(--color-cyan)';
+    const delay = i * 0.2 + (Math.abs(x - 200) / 200) * 0.5;
+    dots.push({ x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10, r: Math.round(r * 10) / 10, color, delay: Math.round(delay * 100) / 100 });
+  }
+}
+---
+
+<svg viewBox="0 0 400 300" class="motion-crowd block aspect-4/3 w-full bg-bg" role="img" aria-label="Une foule de festivaliers dont les bracelets s'allument par vagues devant la scène">
+  <defs>
+    <linearGradient id="crowd-beam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--color-cyan)" stop-opacity="0.35" />
+      <stop offset="1" stop-color="var(--color-cyan)" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <!-- Faisceaux -->
+  <g class="crowd-beams">
+    <polygon points="140,52 150,52 90,230 40,230" fill="url(#crowd-beam)" class="crowd-beam" style="--k: 0" />
+    <polygon points="196,52 204,52 230,230 170,230" fill="url(#crowd-beam)" class="crowd-beam" style="--k: 1" />
+    <polygon points="250,52 260,52 360,230 310,230" fill="url(#crowd-beam)" class="crowd-beam" style="--k: 2" />
+  </g>
+  <!-- Scène -->
+  <path d="M110 40 H290 L310 92 H90 Z" class="fill-surface-2" />
+  <rect x="90" y="92" width="220" height="8" rx="2" class="fill-line" />
+  <!-- Foule -->
+  {dots.map((d) => <circle cx={d.x} cy={d.y} r={d.r} class="crowd-dot" style={`--dot: ${d.color}; --d: ${d.delay}s`} />)}
+</svg>

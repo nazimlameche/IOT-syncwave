@@ -4,19 +4,18 @@ import StarBorder from './react/StarBorder.jsx';
 import { EFFECTS } from './react/effects.js';
 
 /**
- * Carte de section — DESIGN.md §5.
+ * Carte de section compacte — DESIGN.md §5.
  * Bordure animée StarBorder (composant React rendu côté serveur uniquement : aucun JS envoyé).
- * Colonne gauche : libellé (puce + nom) en haut, visuel (slot "media") en bas.
- * Colonne droite : titre qui se déplie, puis le contenu (slot par défaut).
+ * Gauche : titre qui se déplie, description dessous (slot par défaut).
+ * Droite (slot "aside", facultatif) : visuel (MediaCard) ou contenu (liste, specs, formulaire).
  */
 interface Props {
   id?: string;
-  label: string;
   title: string;
   titleTag?: 'h2' | 'h3';
 }
-const { id, label, title, titleTag = 'h2' } = Astro.props;
-const hasMedia = Astro.slots.has('media');
+const { id, title, titleTag = 'h2' } = Astro.props;
+const hasAside = Astro.slots.has('aside');
 const { colorToken, speed, thickness } = EFFECTS.cardBorder;
 ---
 
@@ -31,21 +30,13 @@ const { colorToken, speed, thickness } = EFFECTS.cardBorder;
   textColor="var(--color-text)"
   borderColor="var(--color-line)"
 >
-  <div class="px-6 py-12 md:px-12 md:py-16">
-    <div class="mx-auto grid max-w-content gap-12 md:grid-cols-12 md:gap-8">
-      <div class="flex flex-col justify-between gap-12 md:col-span-5">
-        <p class="flex items-center gap-3 text-body text-text">
-          <span class="size-2 rounded-pill bg-text" aria-hidden="true"></span>
-          {label}
-        </p>
-        {hasMedia && <slot name="media" />}
-      </div>
-      <div class="md:col-span-7">
-        <Fold as={titleTag} text={title} class="text-h1 text-text" />
-        <div class="mt-8 grid gap-6">
-          <slot />
-        </div>
+  <div class={`grid items-center gap-6 p-6 md:gap-8 md:p-8 ${hasAside ? 'md:grid-cols-5' : ''}`}>
+    <div class={hasAside ? 'md:col-span-3' : ''}>
+      <Fold as={titleTag} text={title} class="text-h2 text-text" />
+      <div class="mt-4 grid gap-4">
+        <slot />
       </div>
     </div>
+    {hasAside && <div class="md:col-span-2"><slot name="aside" /></div>}
   </div>
 </StarBorder>

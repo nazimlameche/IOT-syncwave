@@ -6,69 +6,59 @@ import SectionCard from '../components/SectionCard.astro';
 import MediaCard from '../components/MediaCard.astro';
 import Fold from '../components/Fold.astro';
 import PageBackground from '../components/react/PageBackground.jsx';
+import TeamCard from '../components/react/TeamCard.jsx';
 import SpecCard from '../components/SpecCard.astro';
 import DemoForm from '../components/DemoForm.astro';
 import Footer from '../components/Footer.astro';
+import StoryStack from '../components/StoryStack.astro';
+import StoryCard from '../components/StoryCard.astro';
+import Button from '../components/Button.astro';
+import Points from '../components/Points.astro';
+import ExplodedView from '../components/motion/ExplodedView.astro';
+import PayMotion from '../components/motion/PayMotion.astro';
+import CrowdMotion from '../components/motion/CrowdMotion.astro';
+import SosMotion from '../components/motion/SosMotion.astro';
 
-const steps = [
-  {
-    title: 'Vous équipez vos festivaliers',
-    text: 'Un bracelet Syncwave remis à chaque entrée, associé au billet et au compte de paiement.',
-  },
-  {
-    title: 'Ils vivent l’événement',
-    text: 'Lumière synchronisée, paiement, accès, amis et SOS : tout se passe au poignet.',
-  },
-  {
-    title: 'Vous pilotez en temps réel',
-    text: 'Flux, ventes et alertes remontent sur une seule plateforme pendant l’événement.',
-  },
+// Récit en cartes empilées — DESIGN.md §5 Récit. Une nuit de festival, du point de vue de l'organisateur.
+// TODO: contenu à valider — textes écrits à partir des informations déjà présentes sur le site
+// (fonctions, prix, composants). Aucune caractéristique technique chiffrée n'a été ajoutée.
+const chapters = [
+  { id: 'le-constat', time: 'Aujourd’hui', chapter: 'Le constat' },
+  { id: 'sous-le-silicone', time: 'Et si…', chapter: 'L’idée' },
+  { id: 'comment-ca-marche', time: 'J-30', chapter: 'La préparation' },
+  { id: 'ouverture', time: '18:00', chapter: 'Ouverture des portes' },
+  { id: 'bars', time: '21:00', chapter: 'Les bars se remplissent' },
+  { id: 'tete-d-affiche', time: '23:00', chapter: 'La tête d’affiche' },
+  { id: 'alerte', time: '01:00', chapter: 'Une alerte' },
+  { id: 'regie', time: 'Toute la nuit', chapter: 'La régie' },
+  { id: 'caracteristiques', time: 'Le lendemain', chapter: 'Le bilan' },
 ];
+const ch = Object.fromEntries(chapters.map((c, i) => [c.id, { ...c, index: i }]));
 
-// TODO: contenu à valider — seules la valeur « 7 € » vient du support de présentation.
+// Pièces de la vue éclatée, de haut en bas (numérotées comme sur le visuel)
+const parts = ['Bracelet silicone', 'Bande LED', 'Boîtier', 'Carte électronique et antenne NFC', 'Batterie'];
+
+const providers = ['Billetterie', 'Paiement', 'Sécurité', 'Lumière', 'Données'];
+const preparation = ['Chaque bracelet associé à un billet', 'Une plateforme pour toutes vos équipes', 'Un prix fixe par festivalier'];
+
+// Bilan : uniquement des éléments déjà établis sur le site.
+// TODO: contenu à valider — ajouter l'autonomie réelle (heures ou jours) et l'indice d'étanchéité (IP) quand ils sont connus.
 const specs = [
-  { value: '7 €', label: 'par personne, tout compris', highlight: true },
-  { value: '—', label: 'Autonomie sur un festival de 3 jours' }, // TODO: autonomie réelle (heures ou jours)
-  { value: '—', label: 'Étanchéité' }, // TODO: indice IP
-  { value: '—', label: 'Connectivité (NFC, Bluetooth…)' }, // TODO: technologies embarquées
+  { value: '7 €', label: 'par festivalier, tout compris', highlight: true },
+  { value: 'NFC', label: 'Paiement et contrôle d’accès sans contact' },
+  { value: '0', label: 'écran ni bouton : rien à apprendre' },
+  { value: '5', label: 'pièces, du bracelet silicone à la batterie' },
 ];
 
-// Vue éclatée : positions en % de la hauteur de l'image vue-eclatee.webp
-// TODO: contenu à valider — caractéristiques réelles de chaque composant (matériau, capacité, protocole)
-const exploded = [
-  { y: 22, title: 'Bracelet silicone', text: 'Souple, fermeture à boucle réglable.' },
-  { y: 47, title: 'Bande LED', text: 'La bande lumineuse pilotée à distance pour les jeux de couleurs.' },
-  { y: 57, title: 'Boîtier', text: 'Le module principal, marqué du S, sans écran ni bouton apparent.' },
-  { y: 70, title: 'Carte électronique et antenne NFC', text: 'Paiement, contrôle d’accès et liaison avec l’application.' },
-  { y: 81, title: 'Batterie', text: 'Batterie plate, logée sous la carte électronique.' },
-];
-
-const iconStroke = 'stroke-current';
-
-// Fonctionnalités : une carte chacune — DESIGN.md §5 Carte de section
-const features = [
-  {
-    label: 'Lumière',
-    title: 'La foule devient le show',
-    text: 'Les bandes lumineuses de chaque bracelet se synchronisent sur la scène. Le public fait partie du spectacle, sans rien avoir à faire.',
-    img: { src: '/product/bracelet-render.webp', width: 1254, height: 1254, alt: 'Bracelet Syncwave, bandes LED cyan et magenta allumées' },
-    caption: 'Bandes LED synchronisées',
-  },
-  {
-    label: 'Paiement et accès',
-    title: 'Payer et entrer d’un geste',
-    text: 'Le bracelet sert de billet et de moyen de paiement sans contact. Plus de file pour l’entrée, plus de monnaie aux buvettes.',
-    img: { src: '/product/paiement.webp', width: 1448, height: 1086, alt: 'Poignet avec bracelet Syncwave posé sur un terminal de paiement sans contact' },
-    caption: 'Paiement sans contact',
-  },
-  {
-    label: 'Amis et SOS',
-    title: 'Retrouver ses amis, alerter la sécurité',
-    text: 'L’application localise le groupe sur le site et le bouton SOS prévient les équipes de sécurité, avec la position exacte.',
-    img: { src: '/product/application.webp', width: 1448, height: 1086, alt: 'Main tenant un téléphone affichant la carte du festival avec la position des amis' },
-    caption: 'Application festivalier',
-  },
-];
+// Équipe Mooroon 5 — DESIGN.md §5 Équipe
+// TODO: contenu à valider — noms, rôles et photos réels des membres (photo détourée, fond transparent)
+const team = [
+  { name: 'Membre 1', role: 'Rôle à préciser', handle: 'mooroon5', status: 'EPITA' },
+  { name: 'Membre 2', role: 'Rôle à préciser', handle: 'mooroon5', status: 'EPITA' },
+  { name: 'Membre 3', role: 'Rôle à préciser', handle: 'mooroon5', status: 'EPITA' },
+  { name: 'Membre 4', role: 'Rôle à préciser', handle: 'mooroon5', status: 'EPITA' },
+  { name: 'Membre 5', role: 'Rôle à préciser', handle: 'mooroon5', status: 'EPITA' },
+].map((m) => ({ ...m, avatarUrl: '/brand/syncwave-mark-512.png' }));
 ---
 
 <Layout
@@ -85,124 +75,176 @@ const features = [
   <main id="contenu">
     <Hero />
 
-    <!-- Toutes les sections après le hero sont des cartes — DESIGN.md §5 Carte de section -->
-    <div class="flex flex-col gap-3 px-3 pb-3 md:gap-4 md:px-4 md:pb-4">
-      <!-- 2. Fonctionnalités : une carte d'introduction, puis une carte par fonction -->
-      <SectionCard id="fonctionnalites" label="Fonctionnalités" title="Des festivals plus vivants, sécurisés et intelligents">
-        <Fold text="Chaque fonction remplace un prestataire, un contrat et une facture." class="text-body-lg text-text-muted" />
-      </SectionCard>
 
-      {
-        features.map((f) => (
-          <SectionCard label={f.label} title={f.title} titleTag="h3">
-            <MediaCard slot="media" caption={f.caption} class="aspect-auto">
-              <img src={f.img.src} width={f.img.width} height={f.img.height} alt={f.img.alt} loading="lazy" decoding="async" class="aspect-4/3" />
-            </MediaCard>
-            <Fold text={f.text} class="text-body-lg text-text-muted" />
-          </SectionCard>
-        ))
-      }
+    <!-- 2 à 5. Le récit : une nuit de festival, carte après carte — DESIGN.md §5 Récit -->
+    <StoryStack
+      id="fonctionnalites"
+      title="Une nuit de festival avec Syncwave"
+      intro="Suivez votre prochain festival côté organisation, de la préparation au bilan du lendemain. Neuf moments, un seul bracelet."
+    >
+      <StoryCard
+        {...ch['le-constat']}
+        statement="Un festival, cinq prestataires."
+        text="Billetterie, paiement, sécurité, lumière, données : chaque brique a son contrat, sa facture et son outil. Le soir du festival, vos équipes jonglent entre cinq écrans."
+      >
+        <div class="story-chips" aria-label="Cinq prestataires remplacés par un bracelet Syncwave">
+          {providers.map((p, k) => <span class="story-chip" style={`--k: ${k}`}>{p}</span>)}
+          <span class="story-chip story-chip--one">1 bracelet Syncwave</span>
+        </div>
+      </StoryCard>
 
-      <SectionCard label="Plateforme" title="Une plateforme, une vision" titleTag="h3">
-        <MediaCard slot="media" caption="Tableau de bord organisateur">
-          <!-- TODO: visuel à produire — capture ou maquette du tableau de bord organisateur -->
-          <div class="flex aspect-4/3 items-center justify-center bg-surface text-magenta">
-            <svg viewBox="0 0 96 96" fill="none" class={`size-32 ${iconStroke}`} stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M16 76h64" />
-              <path d="M24 64V44M40 64V32M56 64V50M72 64V24" />
-            </svg>
+      <StoryCard
+        {...ch['sous-le-silicone']}
+        statement="Et si tout tenait dans un bracelet ?"
+        text="Syncwave réunit billet, paiement, lumière et SOS dans un bracelet souple. Cinq pièces, aucun écran, rien à apprendre pour le public."
+      >
+        <ol slot="after" class="grid gap-1.5">
+          {
+            parts.map((part, i) => (
+              <li class="flex items-baseline gap-3 text-small">
+                <span class="w-6 shrink-0 font-display font-semibold text-cyan">{String(i + 1).padStart(2, '0')}</span>
+                <span class="text-text">{part}</span>
+              </li>
+            ))
+          }
+        </ol>
+        <MediaCard caption="Vue éclatée du bracelet">
+          <ExplodedView />
+        </MediaCard>
+      </StoryCard>
+
+      <StoryCard
+        {...ch['comment-ca-marche']}
+        statement="Vous préparez. Le bracelet fait le reste."
+        text="Chaque bracelet est associé à un billet et à un compte de paiement. Vous configurez l’événement sur une seule plateforme, pour toutes vos équipes."
+      >
+        <ul class="story-ticks grid gap-3 rounded-lg bg-surface-2 p-5">
+          {
+            preparation.map((item, k) => (
+              <li class="flex items-start gap-3 text-body text-text" style={`--k: ${k}`}>
+                <svg viewBox="0 0 24 24" fill="none" class="mt-0.5 size-6 shrink-0 stroke-cyan" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12.5 10 17.5 19 7" />
+                </svg>
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+      </StoryCard>
+
+      <StoryCard
+        {...ch['ouverture']}
+        statement="Le billet est déjà au poignet."
+        text="À l’entrée, les festivaliers approchent le bracelet du lecteur : c’est validé. Pas de billet à chercher, rien à scanner, des files qui avancent."
+        points={['Validation d’un geste', 'Rien à imprimer ni à scanner', 'Des entrées plus fluides']}
+      >
+        <div class="story-gate flex flex-col items-center gap-4 rounded-lg bg-surface-2 p-8">
+          <svg viewBox="0 0 100 100" fill="none" class="size-32" aria-hidden="true">
+            <circle cx="50" cy="50" r="45" class="stroke-line" stroke-width="4" />
+            <circle cx="50" cy="50" r="45" class="story-gate__ring stroke-cyan" stroke-width="4" stroke-linecap="round" transform="rotate(-90 50 50)" />
+            <path d="M32 51 45 64 69 38" class="stroke-cyan" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <p class="story-gate__label font-display text-h2 font-semibold text-text">Accès validé</p>
+        </div>
+      </StoryCard>
+
+      <StoryCard
+        {...ch['bars']}
+        statement="Un geste, c’est payé."
+        text="Aux bars et aux stands, le bracelet devient un moyen de paiement sans contact. Plus de monnaie, plus de carte à sortir, un service plus rapide."
+        points={['Paiement sans contact', 'Plus de monnaie aux bars', 'Toutes les ventes centralisées']}
+      >
+        <MediaCard caption="Paiement sans contact">
+          <PayMotion />
+        </MediaCard>
+      </StoryCard>
+
+      <StoryCard
+        {...ch['tete-d-affiche']}
+        statement="La foule devient le show."
+        text="Quand la tête d’affiche monte sur scène, la régie allume tous les bracelets en rythme. Chaque festivalier devient un point lumineux du spectacle, sans rien faire."
+        points={['Piloté depuis la régie', 'Des effets qui traversent la foule', 'Aucune action du public']}
+      >
+        <MediaCard caption="Bandes LED synchronisées">
+          <CrowdMotion />
+        </MediaCard>
+      </StoryCard>
+
+      <StoryCard
+        {...ch['alerte']}
+        statement="Une alerte, une position, une équipe en route."
+        text="Un festivalier appuie sur SOS : vos équipes de sécurité reçoivent l’alerte avec sa position exacte sur le site. Ses amis, eux, le retrouvent sur la carte."
+        points={['Alerte en un geste', 'Position exacte transmise', 'Le groupe localisé sur la carte']}
+      >
+        <MediaCard caption="Alerte SOS sur le plan du festival">
+          <SosMotion />
+        </MediaCard>
+      </StoryCard>
+
+      <StoryCard
+        {...ch['regie']}
+        statement="Vous voyez tout, en direct."
+        text="Entrées, ventes, affluence par zone, alertes : tout remonte sur un seul tableau de bord, en temps réel. Une IA vous aide à anticiper les pics."
+        points={['Flux et affluence en direct', 'Les ventes de tous les stands', 'Des alertes géolocalisées']}
+      >
+        <!-- TODO: contenu à valider — préciser ce que fait réellement l'IA (prévision des flux ? détection d'incidents ?) -->
+        <MediaCard caption="Tableau de bord organisateur (illustration)">
+          <!-- TODO: visuel à produire — capture ou maquette réelle du tableau de bord organisateur -->
+          <div class="flex aspect-4/3 flex-col justify-between bg-surface p-4" aria-hidden="true">
+            <div class="flex gap-2 text-small text-text-muted">
+              <span class="rounded-pill border border-line px-3 py-1 text-text">Flux</span>
+              <span class="rounded-pill border border-line px-3 py-1">Ventes</span>
+              <span class="rounded-pill border border-line px-3 py-1">Alertes</span>
+            </div>
+            <div class="story-bars flex h-2/3 items-end gap-2">
+              {[40, 65, 50, 80, 95, 70, 85, 60].map((h, k) => <span class={`flex-1 rounded-sm ${k === 4 ? 'bg-cyan' : 'bg-line'}`} style={`height: ${h}%; --k: ${k}`} />)}
+            </div>
           </div>
         </MediaCard>
-        <Fold
-          text="Cinq contrats et cinq factures aujourd’hui. Demain, une seule plateforme, une vue d’ensemble, et une IA qui vous aide à anticiper les flux."
-          class="text-body-lg text-text-muted"
-        />
-        <!-- TODO: contenu à valider — préciser ce que fait réellement l'IA (prévision des flux ? détection d'incidents ?) -->
-      </SectionCard>
+      </StoryCard>
 
-      <!-- 3. Sous le silicone : vue éclatée -->
-      <SectionCard id="sous-le-silicone" label="Conception" title="Sous le silicone">
-        <MediaCard slot="media" caption="Vue éclatée du bracelet">
-          <img
-            src="/product/vue-eclatee.webp"
-            width="1086"
-            height="1448"
-            alt="Vue éclatée du bracelet Syncwave : bracelet silicone, bande LED, boîtier, carte électronique, batterie"
-            loading="lazy"
-            decoding="async"
-          />
-        </MediaCard>
-        <Fold text="Cinq pièces, aucun écran, rien à apprendre." class="text-body-lg text-text-muted" />
-        <ol class="grid gap-6">
-          {
-            exploded.map((l, i) => (
-              <li class="flex gap-4 border-t border-line pt-4">
-                <span class="font-display text-h2 font-semibold text-text-muted" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <div>
-                  <Fold as="h3" text={l.title} class="text-h2 text-text" />
-                  <Fold text={l.text} class="mt-2 text-body text-text-muted" />
-                </div>
-              </li>
-            ))
-          }
-        </ol>
-      </SectionCard>
-
-      <!-- 4. Comment ça marche -->
-      <SectionCard id="comment-ca-marche" label="Déploiement" title="Comment ça marche">
-        <ol class="grid gap-6">
-          {
-            steps.map((s, i) => (
-              <li class="flex gap-4 border-t border-line pt-4">
-                <span class="font-display text-h2 font-semibold text-text-muted" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <div>
-                  <Fold as="h3" text={s.title} class="text-h2 text-text" />
-                  <Fold text={s.text} class="mt-2 text-body text-text-muted" />
-                </div>
-              </li>
-            ))
-          }
-        </ol>
-      </SectionCard>
-
-      <!-- 5. Caractéristiques -->
-      <SectionCard id="caracteristiques" label="Fiche technique" title="Caractéristiques">
-        <Fold text="Un prix par festivalier." class="text-body-lg text-text-muted" />
-        <!-- TODO: contenu à valider — ce que couvre exactement le prix, et les caractéristiques techniques du bracelet -->
-        <div class="grid gap-4 sm:grid-cols-2">
+      <StoryCard
+        {...ch['caracteristiques']}
+        statement="Une seule facture."
+        text="Un seul interlocuteur, un seul contrat, un prix fixe par festivalier. Et les données de toute la soirée pour préparer la prochaine édition."
+      >
+        <p class="mb-4 flex items-baseline gap-4 font-display text-h2 font-bold">
+          <span class="story-invoice__old">5 factures</span>
+          <span class="story-invoice__new text-text">1 facture</span>
+        </p>
+        <div class="grid gap-2">
           {specs.map((s) => <SpecCard value={s.value} label={s.label} highlight={s.highlight} />)}
         </div>
-      </SectionCard>
+        <Button href="#demo" slot="after" class="mt-2 self-start">Demander une démo</Button>
+      </StoryCard>
+    </StoryStack>
 
+    <div class="mx-auto flex max-w-card flex-col gap-4 px-3 py-section md:gap-6 md:px-4">
       <!-- 6. Demander une démo -->
-      <SectionCard id="demo" label="Contact" title="Parlons de votre prochain événement">
+      <SectionCard id="demo" title="Parlons de votre prochain événement">
         <Fold
-          text="Dites-nous où et quand. Nous revenons vers vous avec une démonstration du bracelet et de la plateforme."
-          class="text-body-lg text-text-muted"
+          text="Dites-nous où et quand. Nous revenons vers vous avec une démonstration du bracelet et de la plateforme, adaptée à la taille de votre événement."
+          class="text-body text-text-muted"
         />
-        <DemoForm />
+        <Points items={['Le bracelet en main', 'Une visite de la plateforme organisateur', 'Une estimation pour votre festival']} />
+        <div slot="aside"><DemoForm /></div>
       </SectionCard>
-
-      <!-- 7. À propos -->
-      <SectionCard id="a-propos" label="À propos" title="L’équipe Mooroon 5">
-        <MediaCard slot="media" caption="Mooroon 5">
-          <div class="flex items-center justify-center bg-surface p-12">
-            <img src="/brand/mooroon5-full.png" width="227" height="192" alt="Blason Mooroon 5" loading="lazy" decoding="async" class="w-full max-w-logo" />
-          </div>
-        </MediaCard>
-        <!-- TODO: contenu à valider — présentation de l'équipe, rôle de chacun, contexte du projet -->
-        <Fold
-          text="Mooroon 5 est une équipe d’étudiants de l’EPITA. Syncwave est notre projet d’objet connecté : un bracelet pensé pour les festivals, les concerts et l’événementiel."
-          class="text-body-lg text-text-muted"
-        />
-        <Fold text="Les visuels de ce site sont générés par IA à partir de la conception du bracelet." class="text-small text-text-muted" />
-      </SectionCard>
-
-      <Footer />
     </div>
+
+    <!-- 7. L'équipe : cartes de profil — DESIGN.md §5 Équipe -->
+    <section id="a-propos" class="mx-auto max-w-content px-6 pb-section md:px-12">
+      <Fold as="h2" text="L’équipe Mooroon 5" class="text-h1 text-text" />
+      <Fold
+        text="Mooroon 5 est une équipe d’étudiants de l’EPITA. Syncwave est notre projet d’objet connecté : un bracelet pensé pour les festivals, les concerts et l’événementiel, du matériel à la plateforme."
+        class="mt-6 text-body-lg text-text-muted"
+      />
+      <!-- TODO: contenu à valider — présentation de l'équipe, rôle de chacun, contexte du projet -->
+      <ul class="team-list mt-12 flex flex-wrap justify-center gap-6">
+        {team.map((m) => <li><TeamCard client:visible {...m} /></li>)}
+      </ul>
+      <p class="mt-12 text-small text-text-muted">Les visuels de ce site sont générés par IA à partir de la conception du bracelet.</p>
+    </section>
   </main>
+
+  <Footer />
 </Layout>

@@ -57,6 +57,22 @@ export const EFFECTS = {
     perspective: 700,
     creaseShading: 0.55,
   },
+  /** Anneau de texte autour du logo du pied de page (props de CircularText). */
+  footerRing: {
+    text: 'SYNCWAVE • MOOROON 5 • ',
+    spinDuration: 20,
+    onHover: 'speedUp',
+  },
+  /** Cartes de l'équipe (props de ProfileCard). Couleurs en var() sur les tokens. */
+  profileCard: {
+    contactText: 'Contacter',
+    contactTarget: 'demo',
+    innerGradient:
+      'linear-gradient(145deg, color-mix(in srgb, var(--color-violet) 55%, transparent) 0%, color-mix(in srgb, var(--color-cyan) 27%, transparent) 100%)',
+    behindGlowColor: 'color-mix(in srgb, var(--color-cyan) 67%, transparent)',
+    behindGlowEnabled: true,
+    enableTilt: true,
+  },
   wordmark: {
     text: 'Syncwave',
     strokeColorToken: '--color-text',
@@ -100,5 +116,6 @@ export const PAGE_TOP_EVENT = 'syncwave:page-top';
 export const readToken = (name) =>
   getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
+/** false côté serveur (rendu Astro), la vraie préférence dans le navigateur. */
 export const prefersReducedMotion = () =>
-  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+  typeof window !== 'undefined' && (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);

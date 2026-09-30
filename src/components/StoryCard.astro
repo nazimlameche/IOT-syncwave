@@ -1,0 +1,53 @@
+---
+import Fold from './Fold.astro';
+import Points from './Points.astro';
+import StarBorder from './react/StarBorder.jsx';
+import { EFFECTS } from './react/effects.js';
+
+/**
+ * Chapitre du récit en cartes empilées — DESIGN.md §5 Récit.
+ * En-tête : l'heure (repère de mémoire) et le nom du chapitre. Gauche : la phrase à retenir, le texte,
+ * les points clés. Droite (slot par défaut) : le visuel du chapitre et son moment animé, joué quand la
+ * carte devient active (classe .is-active posée par StoryStack).
+ */
+interface Props {
+  id: string;
+  index: number;
+  time: string;
+  chapter: string;
+  statement: string;
+  text: string;
+  points?: string[];
+}
+const { id, index, time, chapter, statement, text, points } = Astro.props;
+const { colorToken, speed, thickness } = EFFECTS.cardBorder;
+---
+
+<div id={id} class="story-slot" style={`--i: ${index}`} data-story-slot>
+  <StarBorder
+    as="article"
+    className="section-card story-card"
+    color={`var(${colorToken})`}
+    speed={speed}
+    thickness={thickness}
+    backgroundColor="var(--color-surface)"
+    textColor="var(--color-text)"
+    borderColor="var(--color-line)"
+  >
+    <div class="grid items-center gap-6 p-6 md:grid-cols-5 md:gap-10 md:p-10">
+      <div class="flex flex-col gap-4 md:col-span-3">
+        <p class="flex items-baseline gap-3">
+          <span class="font-display text-h2 font-bold text-cyan">{time}</span>
+          <span class="text-small text-text-muted">{chapter}</span>
+        </p>
+        <Fold as="h3" text={statement} split="line" class="text-h1 text-text" />
+        <Fold text={text} class="text-body text-text-muted" />
+        {points && <Points items={points} />}
+        <slot name="after" />
+      </div>
+      <div class="story-visual md:col-span-2">
+        <slot />
+      </div>
+    </div>
+  </StarBorder>
+</div>

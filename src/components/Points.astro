@@ -1,0 +1,27 @@
+---
+import Fold from './Fold.astro';
+
+/**
+ * Liste de points clés d'une carte, chacun précédé d'une coche --color-cyan — DESIGN.md §5 Carte de section.
+ * Chaque point se déplie comme les autres textes de carte.
+ */
+interface Props {
+  items: string[];
+  class?: string;
+}
+const { items, class: extra = '' } = Astro.props;
+---
+
+<ul class={`grid gap-2 ${extra}`}>
+  {
+    items.map((item) => (
+      <li class="flex items-start gap-3 text-body text-text">
+        <svg viewBox="0 0 24 24" fill="none" class="mt-0.5 size-5 shrink-0 stroke-cyan" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="m8 12.5 2.5 2.5L16 9.5" />
+        </svg>
+        <Fold text={item} />
+      </li>
+    ))
+  }
+</ul>
