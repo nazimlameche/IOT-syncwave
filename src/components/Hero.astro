@@ -1,40 +1,34 @@
 ---
 import Button from './Button.astro';
+import HeroWordmark from './react/HeroWordmark.jsx';
 
 /**
- * Hero en bandeau photo — DESIGN.md §5 Hero (variante photo) et §4.
- * Seul moment animé du site : la photo apparaît, puis le halo cyan s'allume et respire.
+ * Hero à fond animé — DESIGN.md §5 Hero (variante « Fond animé »), §4 et §4 bis.
+ * « Syncwave » se dessine en boucle, entouré de son orbite d'icônes, sur le fond animé de la page.
  */
 ---
 
-<section id="hero" class="relative flex min-h-dvh items-end overflow-hidden">
-  <!-- Visuel généré par IA, voir DESIGN.md §8 -->
-  <img
-    class="hero-product absolute inset-0 h-full w-full object-cover"
-    src="/product/ambiance-foule.webp"
-    width="1600"
-    height="900"
-    alt="Foule de festival la nuit, poignets levés portant des bracelets Syncwave allumés en cyan"
-    fetchpriority="high"
-    decoding="async"
-  />
-  <!-- Halo : la lumière vient de la scène et des bracelets, il respire -->
-  <div class="hero-halo pointer-events-none absolute inset-0" aria-hidden="true">
-    <div class="absolute left-1/2 top-1/4 h-1/2 w-2/3 -translate-x-1/2 rounded-full bg-cyan/20 blur-halo"></div>
-  </div>
-  <div class="pointer-events-none absolute inset-0 bg-scrim" aria-hidden="true"></div>
+<!-- Fond transparent : le fond animé de la page (PageBackground, index.astro) passe dessous -->
+<section id="hero" class="relative flex min-h-dvh items-center justify-center overflow-hidden">
 
-  <div class="relative mx-auto w-full max-w-content px-6 pb-section pt-40 md:px-12">
-    <div class="max-w-prose">
-      <h1 class="text-display text-text">Tout le festival au poignet</h1>
-      <p class="mt-6 text-body-lg text-text-muted">
-        Syncwave réunit lumière, paiement, accès et sécurité dans un seul bracelet, et vous donne une vue
-        d'ensemble de votre événement.
-      </p>
-      <div class="mt-8 flex flex-wrap items-center gap-6">
-        <Button href="#demo">Demander une démo</Button>
-        <Button href="#fonctionnalites" variant="link">Voir les fonctionnalités</Button>
-      </div>
+  <div class="pointer-events-none relative mx-auto flex w-full max-w-content flex-col items-center px-6 py-24 text-center md:px-12">
+    <h1 class="hero-title w-full text-text">
+      <span class="sr-only">Syncwave, créons ensemble le festival de demain</span>
+      <span class="flex flex-col items-center gap-4" aria-hidden="true">
+        <span class="hero-wordmark block w-full">
+          <HeroWordmark client:only="react" />
+          <noscript><span class="block font-display text-display">Syncwave</span></noscript>
+        </span>
+        <span class="block text-h1">Créons ensemble le festival de demain</span>
+      </span>
+    </h1>
+    <p class="mt-6 text-body-lg text-text">
+      Syncwave réunit lumière, paiement, accès et sécurité dans un seul bracelet, et vous donne une vue
+      d'ensemble de votre événement.
+    </p>
+    <div class="pointer-events-auto mt-8 flex flex-wrap items-center justify-center gap-6">
+      <Button href="#demo">Demander une démo</Button>
+      <Button href="#fonctionnalites" variant="link">Voir les fonctionnalités</Button>
     </div>
   </div>
 </section>

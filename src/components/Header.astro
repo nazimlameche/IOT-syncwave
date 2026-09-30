@@ -10,7 +10,7 @@ const links = [
 ];
 ---
 
-<header class="fixed inset-x-0 top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-md">
+<header class="site-header fixed inset-x-0 top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-md">
   <div class="mx-auto flex max-w-content items-center justify-between px-6 py-4 md:px-12">
     <a href="#" aria-label="Syncwave, retour en haut de page"><Logo /></a>
 
@@ -62,7 +62,99 @@ const links = [
     toggle.setAttribute('aria-expanded', String(open));
     toggle.textContent = open ? 'Fermer' : 'Menu';
     document.body.style.overflow = open ? 'hidden' : '';
+    document.dispatchEvent(new CustomEvent('header:menu', { detail: open }));
   };
   toggle?.addEventListener('click', () => setOpen(menu?.hidden ?? true));
   menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+
+  /** Limite de la zone « haut de page » (px de défilement) : au-delà, le header se masque. */
+  const HEADER_TOP_THRESHOLD = 16;
+  /**
+   * 'top-only' : visible seulement en haut de page. Un futur mode « réapparaît dès qu'on remonte »
+   * s'ajoutera ici et dans shouldShow ci-dessous.
+   */
+  const HEADER_MODE: 'top-only' = 'top-only';
+  /** Émis à chaque retour en haut de page (rejoue le dépliage des textes des cartes). Voir react/effects.js. */
+  const PAGE_TOP_EVENT = 'syncwave:page-top';
+
+  /** Header masquable — DESIGN.md §4 et §5 Header. */
+  function initHeaderAutoHide() {
+    const header = document.querySelector<HTMLElement>('.site-header');
+    if (!header) return;
+
+    // Sentinelle invisible couvrant les HEADER_TOP_THRESHOLD premiers pixels de la page.
+    const zone = document.createElement('div');
+    zone.setAttribute('aria-hidden', 'true');
+    zone.style.cssText = `position:absolute;top:0;left:0;width:1px;height:${HEADER_TOP_THRESHOLD}px;pointer-events:none;`;
+    document.body.prepend(zone);
+
+    // Ouverture sur une ancre : le navigateur y défile après le chargement.
+    // On part masqué et on ignore les « en haut » tant que ce défilement n'a pas eu lieu.
+    let awaitingHashScroll = Boolean(location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1))));
+    let inZone = !awaitingHashScroll && window.scrollY < HEADER_TOP_THRESHOLD;
+    let menuOpen = false;
+    let focusInside = false;
+
+    const shouldShow = () => {
+      if (menuOpen || focusInside) return true;
+      switch (HEADER_MODE) {
+        case 'top-only':
+          return inZone;
+      }
+    };
+
+    const apply = () => {
+      const hidden = !shouldShow();
+      header.toggleAttribute('data-hidden', hidden);
+      header.inert = hidden;
+      if (hidden) header.setAttribute('aria-hidden', 'true');
+      else header.removeAttribute('aria-hidden');
+    };
+
+    const setInZone = (next: boolean) => {
+      const returnedToTop = next && !inZone;
+      inZone = next;
+      apply();
+      if (returnedToTop) document.dispatchEvent(new CustomEvent(PAGE_TOP_EVENT));
+    };
+
+    // État initial sans transition. La transition n'est activée qu'à la première interaction :
+    // tout ce qui se passe avant (chargement, défilement automatique vers une ancre) est instantané.
+    apply();
+    const enableTransition = () => {
+      header.setAttribute('data-animate', '');
+      if (!awaitingHashScroll) return;
+      // L'utilisateur agit avant que le défilement vers l'ancre ait été constaté : on repart de la position réelle.
+      awaitingHashScroll = false;
+      setInZone(window.scrollY < HEADER_TOP_THRESHOLD);
+    };
+    for (const type of ['pointerdown', 'wheel', 'touchstart', 'keydown']) {
+      window.addEventListener(type, enableTransition, { once: true, passive: true });
+    }
+
+    new IntersectionObserver((entries) => {
+      const intersecting = entries[entries.length - 1].isIntersecting;
+      if (awaitingHashScroll) {
+        if (intersecting) return;
+        awaitingHashScroll = false;
+      }
+      setInZone(intersecting);
+    }).observe(zone);
+
+    document.addEventListener('header:menu', (e) => {
+      menuOpen = (e as CustomEvent<boolean>).detail;
+      apply();
+    });
+    header.addEventListener('focusin', () => {
+      focusInside = true;
+      apply();
+    });
+    header.addEventListener('focusout', (e) => {
+      if (header.contains(e.relatedTarget as Node | null)) return;
+      focusInside = false;
+      apply();
+    });
+  }
+
+  initHeaderAutoHide();
 </script>

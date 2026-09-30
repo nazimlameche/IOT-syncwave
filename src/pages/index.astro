@@ -2,9 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import FeatureBlock from '../components/FeatureBlock.astro';
-import ExplodedView from '../components/ExplodedView.astro';
-import Steps from '../components/Steps.astro';
+import SectionCard from '../components/SectionCard.astro';
+import MediaCard from '../components/MediaCard.astro';
+import Fold from '../components/Fold.astro';
+import PageBackground from '../components/react/PageBackground.jsx';
 import SpecCard from '../components/SpecCard.astro';
 import DemoForm from '../components/DemoForm.astro';
 import Footer from '../components/Footer.astro';
@@ -43,169 +44,165 @@ const exploded = [
 ];
 
 const iconStroke = 'stroke-current';
+
+// Fonctionnalités : une carte chacune — DESIGN.md §5 Carte de section
+const features = [
+  {
+    label: 'Lumière',
+    title: 'La foule devient le show',
+    text: 'Les bandes lumineuses de chaque bracelet se synchronisent sur la scène. Le public fait partie du spectacle, sans rien avoir à faire.',
+    img: { src: '/product/bracelet-render.webp', width: 1254, height: 1254, alt: 'Bracelet Syncwave, bandes LED cyan et magenta allumées' },
+    caption: 'Bandes LED synchronisées',
+  },
+  {
+    label: 'Paiement et accès',
+    title: 'Payer et entrer d’un geste',
+    text: 'Le bracelet sert de billet et de moyen de paiement sans contact. Plus de file pour l’entrée, plus de monnaie aux buvettes.',
+    img: { src: '/product/paiement.webp', width: 1448, height: 1086, alt: 'Poignet avec bracelet Syncwave posé sur un terminal de paiement sans contact' },
+    caption: 'Paiement sans contact',
+  },
+  {
+    label: 'Amis et SOS',
+    title: 'Retrouver ses amis, alerter la sécurité',
+    text: 'L’application localise le groupe sur le site et le bouton SOS prévient les équipes de sécurité, avec la position exacte.',
+    img: { src: '/product/application.webp', width: 1448, height: 1086, alt: 'Main tenant un téléphone affichant la carte du festival avec la position des amis' },
+    caption: 'Application festivalier',
+  },
+];
 ---
 
 <Layout
   title="Syncwave — le bracelet connecté des festivals"
   description="Syncwave réunit lumière, paiement sans contact, contrôle d'accès, localisation des amis et SOS dans un seul bracelet, avec une plateforme unique pour les organisateurs."
 >
+  <!-- Fond animé de toute la page, derrière tout le contenu. Reste --color-bg sans WebGL. -->
+  <div class="pointer-events-none fixed inset-0 -z-10" aria-hidden="true">
+    <PageBackground client:only="react" />
+  </div>
+
   <Header />
 
   <main id="contenu">
     <Hero />
 
-    <!-- 2. Fonctionnalités : 4 blocs alternés, cyan par défaut, magenta sur le dernier -->
-    <section id="fonctionnalites" class="py-section">
-      <div class="mx-auto max-w-content px-6 md:px-12">
-        <h2 class="text-h1 text-text">Des festivals plus vivants, sécurisés et intelligents</h2>
-        <p class="mt-6 text-body-lg text-text-muted">
-          Chaque fonction remplace un prestataire, un contrat et une facture.
-        </p>
+    <!-- Toutes les sections après le hero sont des cartes — DESIGN.md §5 Carte de section -->
+    <div class="flex flex-col gap-3 px-3 pb-3 md:gap-4 md:px-4 md:pb-4">
+      <!-- 2. Fonctionnalités : une carte d'introduction, puis une carte par fonction -->
+      <SectionCard id="fonctionnalites" label="Fonctionnalités" title="Des festivals plus vivants, sécurisés et intelligents">
+        <Fold text="Chaque fonction remplace un prestataire, un contrat et une facture." class="text-body-lg text-text-muted" />
+      </SectionCard>
 
-        <div class="mt-12 grid gap-16 md:gap-24">
-          <FeatureBlock title="La foule devient le show">
-            <img
-              slot="visual"
-              src="/product/bracelet-render.webp"
-              width="1254"
-              height="1254"
-              alt="Bracelet Syncwave, bandes LED cyan et magenta allumées"
-              loading="lazy"
-              decoding="async"
-            />
-            Les bandes lumineuses de chaque bracelet se synchronisent sur la scène. Le public fait partie du
-            spectacle, sans rien avoir à faire.
-          </FeatureBlock>
+      {
+        features.map((f) => (
+          <SectionCard label={f.label} title={f.title} titleTag="h3">
+            <MediaCard slot="media" caption={f.caption} class="aspect-auto">
+              <img src={f.img.src} width={f.img.width} height={f.img.height} alt={f.img.alt} loading="lazy" decoding="async" class="aspect-4/3" />
+            </MediaCard>
+            <Fold text={f.text} class="text-body-lg text-text-muted" />
+          </SectionCard>
+        ))
+      }
 
-          <FeatureBlock title="Payer et entrer d’un geste" reverse>
-            <img
-              slot="visual"
-              src="/product/paiement.webp"
-              width="1448"
-              height="1086"
-              alt="Poignet avec bracelet Syncwave posé sur un terminal de paiement sans contact"
-              loading="lazy"
-              decoding="async"
-            />
-            Le bracelet sert de billet et de moyen de paiement sans contact. Plus de file pour l’entrée, plus
-            de monnaie aux buvettes.
-          </FeatureBlock>
-
-          <FeatureBlock title="Retrouver ses amis, alerter la sécurité">
-            <img
-              slot="visual"
-              src="/product/application.webp"
-              width="1448"
-              height="1086"
-              alt="Main tenant un téléphone affichant la carte du festival avec la position des amis"
-              loading="lazy"
-              decoding="async"
-            />
-            L’application localise le groupe sur le site et le bouton SOS prévient les équipes de sécurité, avec la
-            position exacte.
-          </FeatureBlock>
-
-          <FeatureBlock title="Une plateforme, une vision" reverse accent="magenta">
-            <!-- TODO: visuel à produire — capture ou maquette du tableau de bord organisateur -->
-            <svg slot="visual" viewBox="0 0 96 96" fill="none" class={`size-32 ${iconStroke}`} stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <SectionCard label="Plateforme" title="Une plateforme, une vision" titleTag="h3">
+        <MediaCard slot="media" caption="Tableau de bord organisateur">
+          <!-- TODO: visuel à produire — capture ou maquette du tableau de bord organisateur -->
+          <div class="flex aspect-4/3 items-center justify-center bg-surface text-magenta">
+            <svg viewBox="0 0 96 96" fill="none" class={`size-32 ${iconStroke}`} stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M16 76h64" />
               <path d="M24 64V44M40 64V32M56 64V50M72 64V24" />
             </svg>
-            Cinq contrats et cinq factures aujourd’hui. Demain, une seule plateforme, une vue d’ensemble, et
-            une IA qui vous aide à anticiper les flux.
-            <!-- TODO: contenu à valider — préciser ce que fait réellement l'IA (prévision des flux ? détection d'incidents ?) -->
-          </FeatureBlock>
-        </div>
-      </div>
-    </section>
+          </div>
+        </MediaCard>
+        <Fold
+          text="Cinq contrats et cinq factures aujourd’hui. Demain, une seule plateforme, une vue d’ensemble, et une IA qui vous aide à anticiper les flux."
+          class="text-body-lg text-text-muted"
+        />
+        <!-- TODO: contenu à valider — préciser ce que fait réellement l'IA (prévision des flux ? détection d'incidents ?) -->
+      </SectionCard>
 
-    <!-- 3. Sous le silicone : vue éclatée -->
-    <section id="sous-le-silicone" class="py-section">
-      <div class="mx-auto max-w-content px-6 md:px-12">
-        <h2 class="text-h1 text-text">Sous le silicone</h2>
-        <p class="mt-6 text-body-lg text-text-muted">Cinq pièces, aucun écran, rien à apprendre.</p>
-        <div class="mt-12">
-          <ExplodedView
+      <!-- 3. Sous le silicone : vue éclatée -->
+      <SectionCard id="sous-le-silicone" label="Conception" title="Sous le silicone">
+        <MediaCard slot="media" caption="Vue éclatée du bracelet">
+          <img
             src="/product/vue-eclatee.webp"
-            width={1086}
-            height={1448}
+            width="1086"
+            height="1448"
             alt="Vue éclatée du bracelet Syncwave : bracelet silicone, bande LED, boîtier, carte électronique, batterie"
-            labels={exploded}
+            loading="lazy"
+            decoding="async"
           />
-        </div>
-      </div>
-    </section>
+        </MediaCard>
+        <Fold text="Cinq pièces, aucun écran, rien à apprendre." class="text-body-lg text-text-muted" />
+        <ol class="grid gap-6">
+          {
+            exploded.map((l, i) => (
+              <li class="flex gap-4 border-t border-line pt-4">
+                <span class="font-display text-h2 font-semibold text-text-muted" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div>
+                  <Fold as="h3" text={l.title} class="text-h2 text-text" />
+                  <Fold text={l.text} class="mt-2 text-body text-text-muted" />
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </SectionCard>
 
-    <!-- 4. Comment ça marche -->
-    <section id="comment-ca-marche" class="py-section">
-      <div class="mx-auto max-w-content px-6 md:px-12">
-        <h2 class="text-h1 text-text">Comment ça marche</h2>
-        <div class="mt-12">
-          <Steps steps={steps} />
-        </div>
-      </div>
-    </section>
+      <!-- 4. Comment ça marche -->
+      <SectionCard id="comment-ca-marche" label="Déploiement" title="Comment ça marche">
+        <ol class="grid gap-6">
+          {
+            steps.map((s, i) => (
+              <li class="flex gap-4 border-t border-line pt-4">
+                <span class="font-display text-h2 font-semibold text-text-muted" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div>
+                  <Fold as="h3" text={s.title} class="text-h2 text-text" />
+                  <Fold text={s.text} class="mt-2 text-body text-text-muted" />
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </SectionCard>
 
-    <!-- 5. Caractéristiques -->
-    <section id="caracteristiques" class="py-section">
-      <div class="mx-auto max-w-content px-6 md:px-12">
-        <h2 class="text-h1 text-text">Caractéristiques</h2>
-        <p class="mt-6 text-body-lg text-text-muted">
-          Un prix par festivalier.
-          <!-- TODO: contenu à valider — ce que couvre exactement le prix, et les caractéristiques techniques du bracelet -->
-        </p>
-        <div class="mt-12 grid gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-4">
+      <!-- 5. Caractéristiques -->
+      <SectionCard id="caracteristiques" label="Fiche technique" title="Caractéristiques">
+        <Fold text="Un prix par festivalier." class="text-body-lg text-text-muted" />
+        <!-- TODO: contenu à valider — ce que couvre exactement le prix, et les caractéristiques techniques du bracelet -->
+        <div class="grid gap-4 sm:grid-cols-2">
           {specs.map((s) => <SpecCard value={s.value} label={s.label} highlight={s.highlight} />)}
         </div>
-      </div>
-    </section>
+      </SectionCard>
 
-    <!-- 6. Demander une démo -->
-    <section id="demo" class="py-section">
-      <div class="mx-auto max-w-content px-6 md:px-12">
-        <div class="grid gap-12 md:grid-cols-2 md:gap-8">
-          <div>
-            <h2 class="text-h1 text-text">Parlons de votre prochain événement</h2>
-            <p class="mt-6 text-body-lg text-text-muted">
-              Dites-nous où et quand. Nous revenons vers vous avec une démonstration du bracelet et de la
-              plateforme.
-            </p>
-          </div>
-          <DemoForm />
-        </div>
-      </div>
-    </section>
+      <!-- 6. Demander une démo -->
+      <SectionCard id="demo" label="Contact" title="Parlons de votre prochain événement">
+        <Fold
+          text="Dites-nous où et quand. Nous revenons vers vous avec une démonstration du bracelet et de la plateforme."
+          class="text-body-lg text-text-muted"
+        />
+        <DemoForm />
+      </SectionCard>
 
-    <!-- 7. À propos -->
-    <section id="a-propos" class="py-section">
-      <div class="mx-auto max-w-content px-6 md:px-12">
-        <h2 class="text-h1 text-text">L’équipe Mooroon 5</h2>
-        <div class="mt-12 grid items-center gap-12 md:grid-cols-3 md:gap-8">
-          <div class="md:col-span-2">
-            <p class="text-body text-text-muted">
-              <!-- TODO: contenu à valider — présentation de l'équipe, rôle de chacun, contexte du projet -->
-              Mooroon 5 est une équipe d’étudiants de l’EPITA. Syncwave est notre projet d’objet connecté :
-              un bracelet pensé pour les festivals, les concerts et l’événementiel.
-            </p>
-            <p class="mt-4 text-small text-text-muted">
-              Les visuels de ce site sont générés par IA à partir de la conception du bracelet.
-            </p>
+      <!-- 7. À propos -->
+      <SectionCard id="a-propos" label="À propos" title="L’équipe Mooroon 5">
+        <MediaCard slot="media" caption="Mooroon 5">
+          <div class="flex items-center justify-center bg-surface p-12">
+            <img src="/brand/mooroon5-full.png" width="227" height="192" alt="Blason Mooroon 5" loading="lazy" decoding="async" class="w-full max-w-logo" />
           </div>
-          <div class="flex items-center justify-center rounded-lg border border-line bg-surface p-8">
-            <img
-              src="/brand/mooroon5-full.png"
-              width="227"
-              height="192"
-              alt="Blason Mooroon 5"
-              loading="lazy"
-              decoding="async"
-              class="w-full max-w-logo"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
+        </MediaCard>
+        <!-- TODO: contenu à valider — présentation de l'équipe, rôle de chacun, contexte du projet -->
+        <Fold
+          text="Mooroon 5 est une équipe d’étudiants de l’EPITA. Syncwave est notre projet d’objet connecté : un bracelet pensé pour les festivals, les concerts et l’événementiel."
+          class="text-body-lg text-text-muted"
+        />
+        <Fold text="Les visuels de ce site sont générés par IA à partir de la conception du bracelet." class="text-small text-text-muted" />
+      </SectionCard>
+
+      <Footer />
+    </div>
   </main>
-
-  <Footer />
 </Layout>

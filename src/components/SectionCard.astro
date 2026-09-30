@@ -1,0 +1,51 @@
+---
+import Fold from './Fold.astro';
+import StarBorder from './react/StarBorder.jsx';
+import { EFFECTS } from './react/effects.js';
+
+/**
+ * Carte de section — DESIGN.md §5.
+ * Bordure animée StarBorder (composant React rendu côté serveur uniquement : aucun JS envoyé).
+ * Colonne gauche : libellé (puce + nom) en haut, visuel (slot "media") en bas.
+ * Colonne droite : titre qui se déplie, puis le contenu (slot par défaut).
+ */
+interface Props {
+  id?: string;
+  label: string;
+  title: string;
+  titleTag?: 'h2' | 'h3';
+}
+const { id, label, title, titleTag = 'h2' } = Astro.props;
+const hasMedia = Astro.slots.has('media');
+const { colorToken, speed, thickness } = EFFECTS.cardBorder;
+---
+
+<StarBorder
+  as="section"
+  id={id}
+  className="section-card"
+  color={`var(${colorToken})`}
+  speed={speed}
+  thickness={thickness}
+  backgroundColor="var(--color-surface)"
+  textColor="var(--color-text)"
+  borderColor="var(--color-line)"
+>
+  <div class="px-6 py-12 md:px-12 md:py-16">
+    <div class="mx-auto grid max-w-content gap-12 md:grid-cols-12 md:gap-8">
+      <div class="flex flex-col justify-between gap-12 md:col-span-5">
+        <p class="flex items-center gap-3 text-body text-text">
+          <span class="size-2 rounded-pill bg-text" aria-hidden="true"></span>
+          {label}
+        </p>
+        {hasMedia && <slot name="media" />}
+      </div>
+      <div class="md:col-span-7">
+        <Fold as={titleTag} text={title} class="text-h1 text-text" />
+        <div class="mt-8 grid gap-6">
+          <slot />
+        </div>
+      </div>
+    </div>
+  </div>
+</StarBorder>

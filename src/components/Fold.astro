@@ -1,0 +1,16 @@
+---
+import CardText from './react/CardText.jsx';
+
+/**
+ * Texte de carte qui se déplie (îlot CardText / FoldText) — DESIGN.md §5 Carte de section.
+ * Le texte est rendu côté serveur (SEO, sans JS via <noscript> dans Layout) et plié à l'hydratation.
+ */
+interface Props {
+  text: string;
+  as?: 'h2' | 'h3' | 'p';
+  class?: string;
+}
+const { text, as: Tag = 'p', class: extra = '' } = Astro.props;
+---
+
+<Tag class={extra}><CardText client:idle text={text} /></Tag>

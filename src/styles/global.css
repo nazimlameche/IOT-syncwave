@@ -18,12 +18,15 @@
   --radius-sm: 0.375rem;
   --radius-md: 0.75rem;
   --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
   --radius-pill: 9999px;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 160ms;
   --duration-base: 320ms;
   --duration-slow: 900ms;
+  --duration-header: 700ms;
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
   /* Échelle typographique — DESIGN.md §3.2 */
   --text-display: clamp(2.75rem, 6vw, 5rem);
@@ -51,9 +54,6 @@
   --container-content: 72rem;
   --container-prose: 36rem;
   --container-logo: 10rem; /* 160 px max pour le logo Mooroon 5 couleur */
-
-  /* Flou des halos du hero — DESIGN.md §5 Hero */
-  --blur-halo: 80px;
 }
 
 :root {
@@ -90,39 +90,43 @@ p { max-width: 36rem; }
 /* Fondu des bords d'une image sur fond noir vers --color-bg — DESIGN.md §8 */
 @utility mask-fade { mask-image: radial-gradient(ellipse farthest-side at center, black 60%, transparent 100%); }
 
-/* Hero : le seul moment animé du site — DESIGN.md §4 */
-@keyframes hero-product-in {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+/* Hero à fond animé : le seul moment animé du site — DESIGN.md §4 et §5 Hero */
+.page-bg {
+  position: absolute;
+  inset: 0;
+  transition: opacity var(--duration-slow) var(--ease-out);
 }
-@keyframes hero-halo-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Îlot HeroWordmark — DESIGN.md §4 bis. Hauteur réservée (pas de décalage de mise en page) pour le mot
+   et son orbite d'icônes ; le mot est plus petit que --text-display pour laisser la place à l'orbite. */
+.hero-wordmark {
+  --wordmark-height: calc(var(--text-display) * 0.9);
+  --orbit-size: calc(var(--wordmark-height) * 7);
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: calc(var(--orbit-size) * 0.4);
 }
-@keyframes hero-halo-breathe {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-@keyframes hero-parallax {
-  from { translate: 0 0; }
-  to { translate: 0 2.5rem; } /* ≤ 40 px */
+.hero-title .stroke-text__svg { height: var(--wordmark-height); }
+.hero-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(var(--orbit-size), 100%);
+  translate: -50% -50%;
 }
 
-.hero-product {
-  animation: hero-product-in var(--duration-slow) var(--ease-out) both;
-}
-.hero-halo {
-  animation:
-    hero-halo-in var(--duration-slow) var(--ease-out) 200ms both,
-    hero-halo-breathe var(--pulse-period) ease-in-out calc(200ms + var(--duration-slow)) infinite;
-}
-@supports (animation-timeline: scroll()) {
-  .hero-parallax {
-    animation: hero-parallax linear both;
-    animation-timeline: scroll(root);
-    animation-range: 0 100vh;
-  }
-}
+/* Header masquable — DESIGN.md §4.4 et §5 Header. La transition n'est activée qu'après le premier calcul. */
+.site-header[data-animate] { transition: transform var(--duration-header) var(--ease-in-out); }
+.site-header[data-hidden] { transform: translateY(-100%); }
+
+/* Carte de section : bordure animée StarBorder adaptée aux tokens — DESIGN.md §5 Carte de section */
+.star-border-container.section-card { display: block; border-radius: var(--radius-xl); }
+.section-card > .inner-content { border-radius: var(--radius-xl); padding: 0; text-align: start; font-size: inherit; }
+
+/* Textes des cartes (îlot CardText / FoldText) — DESIGN.md §5 Carte de section.
+   Hérite de l'interlignage et de l'approche du parent, et reste plié tant que l'îlot n'a pas animé. */
+.fold-text.card-text { line-height: inherit; letter-spacing: inherit; }
+.card-text .fold-text-piece { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

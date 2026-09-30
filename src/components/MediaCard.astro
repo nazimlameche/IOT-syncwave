@@ -1,0 +1,21 @@
+---
+/**
+ * Visuel encadré dans une carte de section — DESIGN.md §5 Carte de section.
+ * Fond --color-surface-2, visuel arrondi, légende en dessous.
+ */
+interface Props {
+  caption: string;
+  class?: string;
+}
+const { caption, class: extra = '' } = Astro.props;
+---
+
+<figure class={`rounded-lg bg-surface-2 p-3 ${extra}`}>
+  <div class="overflow-hidden rounded-md [&>img]:h-full [&>img]:w-full [&>img]:object-cover">
+    <slot />
+  </div>
+  <figcaption class="flex items-center justify-between px-1 pt-4 pb-1 text-body text-text">
+    {caption}
+    <img src="/brand/syncwave-mark-512.png" width="512" height="512" alt="" aria-hidden="true" class="size-6" loading="lazy" decoding="async" />
+  </figcaption>
+</figure>
