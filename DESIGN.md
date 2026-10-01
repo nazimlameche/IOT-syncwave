@@ -252,7 +252,7 @@ Modifier un effet = modifier cet objet et ce tableau, dans le même commit.
 Inventaire fermé. Ne pas créer d'autre composant sans l'ajouter ici.
 
 ### Bouton
-- **Primaire** : fond `--gradient-wave`, texte `--color-bg` (sombre sur clair, Inter 500), `--radius-pill`, padding `0.875rem 1.75rem`. Hover : `--glow-cyan` léger + luminosité +5 %. Un seul bouton primaire visible par écran.
+- **Primaire** : fond `--color-violet` uni au repos, texte `--color-text` (≈ 5,2:1), Inter 500, `--radius-pill`, padding `0.875rem 1.75rem`. Survol et focus clavier : le dégradé `--gradient-wave` apparaît en fondu (calque `::before`, `--duration-base`), le texte passe en `--color-bg`, halo `--glow-cyan` léger. Un seul bouton primaire visible par écran.
 - **Secondaire** : fond transparent, bordure `1px solid var(--color-line)`, texte `--color-text`. Hover : bordure devient `--color-cyan` à 40 % d'opacité.
 - **Lien** : texte `--color-text`, soulignement `1px` en `--color-cyan` au hover. Pas de flèche.
 - Focus visible : `outline: 2px solid var(--color-cyan); outline-offset: 3px` sur tous les éléments interactifs.

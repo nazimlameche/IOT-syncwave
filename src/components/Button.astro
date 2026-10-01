@@ -14,7 +14,9 @@ const { href, type = 'button', variant = 'primary', class: extra = '' } = Astro.
 const base =
   'inline-flex items-center justify-center font-medium transition-[color,box-shadow,border-color,filter] duration-fast ease-out-token';
 const variants = {
-  primary: 'bg-wave text-bg rounded-pill px-7 py-3.5 hover:glow-cyan hover:brightness-105',
+  // Violet uni au repos ; le dégradé signature apparaît en fondu au survol / focus clavier (calque ::before)
+  primary:
+    'relative isolate overflow-hidden bg-violet text-text rounded-pill px-7 py-3.5 before:absolute before:inset-0 before:-z-10 before:bg-wave before:opacity-0 before:transition-opacity before:duration-base before:ease-out-token hover:text-bg hover:glow-cyan hover:before:opacity-100 focus-visible:text-bg focus-visible:before:opacity-100',
   secondary:
     'bg-transparent text-text border border-line rounded-pill px-7 py-3.5 hover:border-cyan/40',
   link: 'text-text underline-offset-4 decoration-1 decoration-cyan hover:underline',
