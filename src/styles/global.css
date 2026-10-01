@@ -144,7 +144,12 @@ p { max-width: 36rem; }
 .team-list .pc-details { top: 1.5rem; }
 .team-list .pc-details h3 { font-size: 1.75rem; line-height: 1.1; padding-inline: 1rem; }
 .team-list .pc-details p { top: 0; margin-top: 0.375rem; font-size: 0.875rem; }
-.team-list .pc-avatar-content .avatar { width: 86%; }
+.team-list .pc-avatar-content .avatar {
+  width: 86%;
+  /* Photo remontée au-dessus du bandeau d'infos ; le bas se fond pour ne pas laisser de découpe nette */
+  bottom: 4.5rem;
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
 .footer-wordmark .stroke-text__svg { height: 3rem; }
 
 /* ------------------------------------------------------------------

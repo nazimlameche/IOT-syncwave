@@ -322,7 +322,7 @@ Le cœur de la page : une nuit de festival racontée du point de vue de l'organi
 
 ### Équipe
 - Section `#a-propos` après les cartes, hors carte : titre `--text-h1`, présentation `--text-body-lg`, puis une carte de profil par membre (îlot `TeamCard`, `client:visible`, qui enveloppe `ProfileCard`, copie React Bits sans modification), centrées en ligne et renvoyées à la ligne (trois par ligne sur desktop). 
-- Six cartes, dans l'ordre : Maia Bucamp, Gabriel Franchi, Thomas Baller, Basile De Sousa, Tieoule Coulibaly, Nazim Lameche. Photo détourée (`/public/team/`, 640 × 640), nom (Sora `1.75rem`, une ligne), rôle, identifiant LinkedIn, statut « EPITA ». Le bouton « LinkedIn » ouvre le profil dans un nouvel onglet (sans lien, il devient « Contacter » et mène à `#demo`). Rôle affiché : « Product Owner » pour Thomas Baller (d'après le communiqué), « Équipe Mooroon 5 » pour les autres en attendant leurs rôles (TODO).
+- Six cartes, dans l'ordre : Maia Bucamp, Gabriel Franchi, Thomas Baller, Basile De Sousa, Tieoule Coulibaly, Nazim Lameche. Photo détourée (`/public/team/`, 640 × 640), remontée au-dessus du bandeau d'infos (`bottom: 4.5rem`) avec le bas fondu (masque en dégradé) pour que les visages ne soient jamais recouverts, nom (Sora `1.75rem`, une ligne), rôle, identifiant LinkedIn, statut « EPITA ». Le bouton « LinkedIn » ouvre le profil dans un nouvel onglet (sans lien, il devient « Contacter » et mène à `#demo`). Rôle affiché : « Product Owner » pour Thomas Baller (d'après le communiqué), « Équipe Mooroon 5 » pour les autres en attendant leurs rôles (TODO).
 
 ### Bas de page
 Pas une carte : deux bandeaux pleine largeur, d'après la référence fournie.
