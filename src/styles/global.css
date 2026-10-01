@@ -140,40 +140,22 @@ p { max-width: 36rem; }
 .team-list .pc-card:hover .pc-shine::after,
 .team-list .pc-card.active .pc-shine::after { opacity: 0.35; }
 .team-list .pc-glare { opacity: 0.45; }
+/* Noms et rôle : une taille qui tient sur la carte sans recouvrir les visages */
+.team-list .pc-details { top: 1.5rem; }
+.team-list .pc-details h3 { font-size: 1.75rem; line-height: 1.1; padding-inline: 1rem; }
+.team-list .pc-details p { top: 0; margin-top: 0.375rem; font-size: 0.875rem; }
+.team-list .pc-avatar-content .avatar { width: 86%; }
 .footer-wordmark .stroke-text__svg { height: 3rem; }
 
 /* ------------------------------------------------------------------
-   Récit en cartes empilées (StoryStack / StoryCard) — DESIGN.md §4 et §5 Récit
+   Récit en cartes (StoryStack / StoryCard) — DESIGN.md §4 et §5 Récit
    ------------------------------------------------------------------ */
 .story {
-  --story-top: 1.5rem;        /* position figée de la première carte */
-  --story-peek: 0.875rem;     /* décalage entre deux cartes empilées : le bord des chapitres passés reste visible */
-  --story-dwell: 40svh;       /* défilement entre deux cartes : le temps de lire le chapitre */
-  --story-step: 3.5%;         /* recul d'une carte par carte posée dessus */
-  --story-shade: 0.22;        /* assombrissement d'une carte par carte posée dessus */
   --story-stagger: 140ms;     /* décalage entre les éléments d'un moment animé */
 }
+/* Cartes en flux normal : pas d'empilement ni de défilement bloqué */
 .story-deck { display: flex; flex-direction: column; gap: 1rem; }
-@media (min-width: 768px) {
-  .story-deck { gap: var(--story-dwell); padding-bottom: 30svh; }
-  .story-slot { position: sticky; top: calc(var(--story-top) + var(--i) * var(--story-peek)); }
-}
-/* Recul et assombrissement pilotés par --story-depth (0 = carte au premier plan) */
-.story-card {
-  transform-origin: 50% 0;
-  transform: scale(calc(1 - min(var(--story-depth, 0), 3) * var(--story-step)));
-  opacity: calc(1 - max(var(--story-depth, 0) - 3, 0));
-}
-.story-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  border-radius: inherit;
-  background: var(--color-bg);
-  opacity: calc(min(var(--story-depth, 0), 3) * var(--story-shade));
-}
+@media (min-width: 768px) { .story-deck { gap: 1.5rem; } }
 
 /* Les moments animés partent de leur état initial seulement une fois le script prêt (sans JS : état final),
    et seulement pour les chapitres pas encore atteints. Un chapitre passé reste dans son état final. */
@@ -310,6 +292,23 @@ p { max-width: 36rem; }
    On les masque et on espace les mots par une marge (le retour à la ligne se fait entre les mots). */
 .card-text .fold-text-whitespace { display: none; }
 .card-text .fold-text-segment { margin-inline-end: 0.28em; }
+
+/* Impression (communiqué de presse) — DESIGN.md §5 Communiqué de presse.
+   Les tokens passent en version papier : fond blanc, texte sombre ; navigation et fond animé masqués. */
+@media print {
+  :root {
+    --color-bg: #FFFFFF;
+    --color-surface: #FFFFFF;
+    --color-surface-2: #F4F4F6;
+    --color-text: #111116;
+    --color-text-muted: #4A4A55;
+    --color-line: rgba(17, 17, 22, 0.15);
+    --color-cyan: #0E8F86;
+  }
+  .site-header, footer, .no-print { display: none !important; }
+  main { padding: 0 !important; }
+  .press-sheet { border: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

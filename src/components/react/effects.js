@@ -66,6 +66,7 @@ export const EFFECTS = {
   /** Cartes de l'équipe (props de ProfileCard). Couleurs en var() sur les tokens. */
   profileCard: {
     contactText: 'Contacter',
+    linkedinText: 'LinkedIn',
     contactTarget: 'demo',
     innerGradient:
       'linear-gradient(145deg, color-mix(in srgb, var(--color-violet) 55%, transparent) 0%, color-mix(in srgb, var(--color-cyan) 27%, transparent) 100%)',

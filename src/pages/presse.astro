@@ -1,0 +1,184 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Button from '../components/Button.astro';
+import PageBackground from '../components/react/PageBackground.jsx';
+
+/**
+ * Communiqué de presse — DESIGN.md §5 Communiqué de presse.
+ * Mise en page d'un communiqué officiel : en-tête (émetteur, mention, date, diffusion), titre, chapô,
+ * corps avec date en tête, citation, marque de fin « Fin du communiqué », « À propos » ; à côté : contact presse,
+ * l'essentiel, impression / PDF. Le texte du communiqué est reproduit tel que fourni par l'équipe.
+ */
+// TODO: contenu à valider — date de publication du communiqué
+const PUBLISHED = { iso: '2026-10-01', label: '1er octobre 2026' };
+const CONTACT = 'moorooniot@gmail.com';
+const facts = [
+  { term: 'Essai', value: 'Quatre bracelets' },
+  { term: 'Quand', value: 'Fin novembre 2026' },
+  { term: 'Où', value: 'Lors d’un événement privé' },
+  { term: 'En test', value: 'Rapport après l’événement, assisté par IA' },
+];
+---
+
+<Layout
+  title="Communiqué de presse — Mooroon5 présente SyncWave"
+  description="Mooroon5 présente SyncWave, un bracelet connecté et un outil d’analyse en préparation pour les organisateurs de festivals. Essai de quatre bracelets fin novembre 2026."
+>
+  <div class="no-print pointer-events-none fixed inset-0 -z-10" aria-hidden="true">
+    <PageBackground client:only="react" />
+  </div>
+
+  <Header />
+
+  <main id="contenu" class="px-3 pb-section pt-28 md:px-4 md:pt-32">
+    <div class="mx-auto grid max-w-content items-start gap-4 lg:grid-cols-12 lg:gap-6">
+      <!-- Le document -->
+      <article class="press-sheet rounded-xl border border-line bg-surface lg:col-span-8" aria-labelledby="cp-titre">
+        <header class="border-b border-line px-6 py-6 md:px-12 md:py-8">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <p class="flex items-center gap-3">
+              <img src="/brand/syncwave-mark-512.png" width="512" height="512" alt="" aria-hidden="true" class="size-10" />
+              <span class="font-display text-h2 font-bold text-text">Syncwave</span>
+              <span class="text-small text-text-muted">un projet Mooroon 5</span>
+            </p>
+            <p class="text-small font-semibold uppercase tracking-widest text-cyan">Communiqué de presse</p>
+          </div>
+          <dl class="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-small text-text-muted">
+            <div class="flex gap-2">
+              <dt>Date</dt>
+              <dd class="text-text"><time datetime={PUBLISHED.iso}>{PUBLISHED.label}</time></dd>
+            </div>
+            <div class="flex gap-2">
+              <dt>Diffusion</dt>
+              <dd class="text-text">Immédiate</dd>
+            </div>
+            <div class="flex gap-2">
+              <dt>Contact</dt>
+              <dd><a href={`mailto:${CONTACT}`} class="text-text decoration-1 decoration-cyan underline-offset-4 hover:underline">{CONTACT}</a></dd>
+            </div>
+          </dl>
+        </header>
+
+        <div class="px-6 py-10 md:px-12 md:py-14">
+          <h1 id="cp-titre" class="text-h1 text-text">Mooroon5 présente SyncWave</h1>
+          <p class="mt-4 max-w-none text-body-lg font-medium text-text">
+            Un bracelet connecté et un outil d’analyse en préparation pour les organisateurs de festivals.
+          </p>
+
+          <div class="press-body mt-10 grid gap-6 text-body-lg text-text-muted">
+            <p>
+              <span class="font-semibold text-text"><time datetime={PUBLISHED.iso}>{PUBLISHED.label}</time> —</span>{' '}
+              Comment mieux comprendre les mouvements du public pendant un événement et tirer des enseignements pour la
+              prochaine édition&#8239;? C’est la question à laquelle Mooroon5 souhaite répondre avec{' '}
+              <strong class="font-semibold text-text">SyncWave</strong>.
+            </p>
+            <p>
+              Le projet associe un bracelet connecté à une visualisation des zones d’affluence. Une autre fonction,
+              actuellement en test, vise à générer après l’événement un rapport assisté par IA&#8239;: zones d’affluence,
+              incidents, déplacements des équipes et recommandations à examiner par les organisateurs.
+            </p>
+            <p>
+              <strong class="font-semibold text-text">La prochaine étape est un essai de quatre bracelets fin novembre 2026</strong>,
+              lors d’un événement privé. Ce test nous permettra de vérifier le fonctionnement du prototype et d’évaluer si
+              les informations produites sont réellement utiles sur le terrain. Nous partagerons ce que nous aurons appris
+              après l’essai.
+            </p>
+
+            <figure class="press-quote my-4 rounded-lg border-l-4 border-cyan bg-surface-2 px-6 py-8 md:px-10">
+              <blockquote class="max-w-none font-display text-h2 font-semibold text-text">
+                <p class="max-w-none">
+                  «&#8239;Avec SyncWave, nous voulons donner aux organisateurs une vision plus claire de ce qui se passe sur
+                  le terrain et des éléments utiles pour préparer l’édition suivante. Le test de novembre nous permettra de
+                  confronter cette ambition à un usage réel&#8239;»
+                </p>
+              </blockquote>
+              <figcaption class="mt-6 flex items-center gap-4">
+                <img
+                  src="/team/thomas-baller.webp"
+                  width="640"
+                  height="640"
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  class="size-12 rounded-pill bg-surface object-cover"
+                />
+                <span class="text-body">
+                  <span class="block font-semibold text-text">Thomas Baller</span>
+                  <span class="block text-small text-text-muted">Product Owner du projet</span>
+                </span>
+              </figcaption>
+            </figure>
+
+            <p>
+              <strong class="font-semibold text-text">Vous organisez un événement ou souhaitez suivre le projet&#8239;?</strong>
+{' '}Contactez Mooroon5 à{' '}
+              <a href={`mailto:${CONTACT}`} class="text-text underline decoration-cyan decoration-1 underline-offset-4">{CONTACT}</a>.
+            </p>
+          </div>
+
+          <p class="mt-14 text-center text-small font-semibold uppercase tracking-widest text-text-muted">Fin du communiqué</p>
+
+          <section class="mt-14 border-t border-line pt-8" aria-labelledby="cp-a-propos">
+            <h2 id="cp-a-propos" class="text-small font-semibold uppercase tracking-widest text-text-muted">À propos de Mooroon5</h2>
+            <!-- TODO: contenu à valider — texte de présentation de l'équipe pour la presse -->
+            <p class="mt-4 max-w-none text-body text-text-muted">
+              Mooroon5 est une équipe de six étudiants de l’EPITA. SyncWave est son projet d’objet connecté&#8239;: un
+              bracelet et un outil d’analyse pensés pour les organisateurs de festivals, de concerts et d’événements.
+            </p>
+          </section>
+        </div>
+      </article>
+
+      <!-- À côté du document -->
+      <aside class="grid gap-4 lg:sticky lg:top-6 lg:col-span-4" aria-label="Informations presse">
+        <section class="rounded-xl border border-line bg-surface p-6" aria-labelledby="cp-contact">
+          <h2 id="cp-contact" class="text-small font-semibold uppercase tracking-widest text-text-muted">Contact presse</h2>
+          <p class="mt-4 font-display text-h2 font-semibold text-text">Mooroon5</p>
+          <p class="mt-1 text-body">
+            <a href={`mailto:${CONTACT}`} class="text-text underline decoration-cyan decoration-1 underline-offset-4">{CONTACT}</a>
+          </p>
+          <div class="no-print mt-6">
+            <Button href={`mailto:${CONTACT}?subject=${encodeURIComponent('SyncWave — demande presse')}`} variant="secondary">Écrire à l’équipe</Button>
+          </div>
+        </section>
+
+        <section class="rounded-xl border border-line bg-surface p-6" aria-labelledby="cp-essentiel">
+          <h2 id="cp-essentiel" class="text-small font-semibold uppercase tracking-widest text-text-muted">L’essentiel</h2>
+          <dl class="mt-4 grid gap-3">
+            {
+              facts.map((f) => (
+                <div class="flex items-baseline justify-between gap-4 border-t border-line pt-3">
+                  <dt class="text-small text-text-muted">{f.term}</dt>
+                  <dd class="text-right text-body font-medium text-text">{f.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </section>
+
+        <section class="no-print rounded-xl border border-line bg-surface p-6" aria-labelledby="cp-ressources">
+          <h2 id="cp-ressources" class="text-small font-semibold uppercase tracking-widest text-text-muted">Ressources</h2>
+          <div class="mt-4 flex flex-col items-start gap-4">
+            <button type="button" data-print class="inline-flex items-center gap-2 rounded-pill border border-line px-6 py-3 font-medium text-text transition-[border-color] duration-fast ease-out-token hover:border-cyan/40">
+              <svg viewBox="0 0 24 24" fill="none" class="size-5 stroke-current" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 9V3h10v6M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                <path d="M7 14h10v7H7z" />
+              </svg>
+              Imprimer ou enregistrer en PDF
+            </button>
+            <a href="/" class="text-text decoration-1 decoration-cyan underline-offset-4 hover:underline">Découvrir Syncwave</a>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+</script>

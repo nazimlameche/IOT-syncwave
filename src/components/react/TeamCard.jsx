@@ -3,9 +3,10 @@ import { EFFECTS, prefersReducedMotion } from './effects.js';
 
 /**
  * Carte d'un membre de l'équipe (ProfileCard) — DESIGN.md §5 Équipe.
- * Couleurs en var() sur les tokens. « Contacter » mène au formulaire de démo.
+ * Couleurs en var() sur les tokens. Le bouton ouvre le profil LinkedIn du membre (nouvel onglet) ;
+ * sans lien, il mène au formulaire de démo.
  */
-export default function TeamCard({ name, role, handle, status, avatarUrl }) {
+export default function TeamCard({ name, role, handle, status, avatarUrl, linkedin }) {
   const { profileCard } = EFFECTS;
   return (
     <ProfileCard
@@ -16,13 +17,17 @@ export default function TeamCard({ name, role, handle, status, avatarUrl }) {
       avatarUrl={avatarUrl}
       iconUrl=""
       grainUrl=""
-      contactText={profileCard.contactText}
+      contactText={linkedin ? profileCard.linkedinText : profileCard.contactText}
       innerGradient={profileCard.innerGradient}
       behindGlowColor={profileCard.behindGlowColor}
       behindGlowEnabled={profileCard.behindGlowEnabled}
       enableTilt={profileCard.enableTilt && !prefersReducedMotion()}
       enableMobileTilt={false}
-      onContactClick={() => document.getElementById(profileCard.contactTarget)?.scrollIntoView({ behavior: 'smooth' })}
+      onContactClick={() =>
+        linkedin
+          ? window.open(linkedin, '_blank', 'noopener,noreferrer')
+          : document.getElementById(profileCard.contactTarget)?.scrollIntoView({ behavior: 'smooth' })
+      }
     />
   );
 }

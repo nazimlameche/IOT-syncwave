@@ -19,7 +19,7 @@ import PayMotion from '../components/motion/PayMotion.astro';
 import CrowdMotion from '../components/motion/CrowdMotion.astro';
 import SosMotion from '../components/motion/SosMotion.astro';
 
-// Récit en cartes empilées — DESIGN.md §5 Récit. Une nuit de festival, du point de vue de l'organisateur.
+// Récit en cartes — DESIGN.md §5 Récit. Une nuit de festival, du point de vue de l'organisateur.
 // TODO: contenu à valider — textes écrits à partir des informations déjà présentes sur le site
 // (fonctions, prix, composants). Aucune caractéristique technique chiffrée n'a été ajoutée.
 const chapters = [
@@ -50,15 +50,16 @@ const specs = [
   { value: '5', label: 'pièces, du bracelet silicone à la batterie' },
 ];
 
-// Équipe Mooroon 5 — DESIGN.md §5 Équipe
-// TODO: contenu à valider — noms, rôles et photos réels des membres (photo détourée, fond transparent)
+// Équipe Mooroon 5, dans l'ordre — DESIGN.md §5 Équipe
+// TODO: contenu à valider — rôle de chacun dans le projet (affiché sous le nom ; seul celui de Thomas Baller est connu)
 const team = [
-  { name: 'Membre 1', role: 'Rôle à préciser', handle: 'mooroon5', status: 'EPITA' },
-  { name: 'Membre 2', role: 'Rôle à préciser', handle: 'mooroon5', status: 'EPITA' },
-  { name: 'Membre 3', role: 'Rôle à préciser', handle: 'mooroon5', status: 'EPITA' },
-  { name: 'Membre 4', role: 'Rôle à préciser', handle: 'mooroon5', status: 'EPITA' },
-  { name: 'Membre 5', role: 'Rôle à préciser', handle: 'mooroon5', status: 'EPITA' },
-].map((m) => ({ ...m, avatarUrl: '/brand/syncwave-mark-512.png' }));
+  { name: 'Maia Bucamp', slug: 'maia-bucamp', linkedin: 'https://www.linkedin.com/in/maia-bucamp/', photo: '/team/maia-bucamp.webp' },
+  { name: 'Gabriel Franchi', slug: 'gabriel-franchi04', linkedin: 'https://www.linkedin.com/in/gabriel-franchi04/', photo: '/team/gabriel-franchi.webp' },
+  { name: 'Thomas Baller', role: 'Product Owner', slug: 'thomas-baller', linkedin: 'https://www.linkedin.com/in/thomas-baller/', photo: '/team/thomas-baller.webp' },
+  { name: 'Basile De Sousa', slug: 'basile-de-sousa', linkedin: 'https://www.linkedin.com/in/basile-de-sousa/', photo: '/team/basile-de-sousa.webp' },
+  { name: 'Tieoule Coulibaly', slug: 'tieoule-coulibaly', linkedin: 'https://www.linkedin.com/in/tieoule-coulibaly/', photo: '/team/tieoule-coulibaly.webp' },
+  { name: 'Nazim Lameche', slug: 'nazim-lameche', linkedin: 'https://www.linkedin.com/in/nazim-lameche/', photo: '/team/nazim-lameche.webp' },
+].map((m) => ({ name: m.name, role: m.role ?? 'Équipe Mooroon 5', handle: m.slug, status: 'EPITA', avatarUrl: m.photo, linkedin: m.linkedin }));
 ---
 
 <Layout
@@ -242,7 +243,6 @@ const team = [
       <ul class="team-list mt-12 flex flex-wrap justify-center gap-6">
         {team.map((m) => <li><TeamCard client:visible {...m} /></li>)}
       </ul>
-      <p class="mt-12 text-small text-text-muted">Les visuels de ce site sont générés par IA à partir de la conception du bracelet.</p>
     </section>
   </main>
 

@@ -10,10 +10,11 @@ import SyncwaveWordmark from './react/SyncwaveWordmark.jsx';
  *    signature, liens ; puis une ligne de mentions.
  */
 const links = [
-  { href: '#fonctionnalites', label: 'Fonctionnalités' },
-  { href: '#comment-ca-marche', label: 'Comment ça marche' },
-  { href: '#caracteristiques', label: 'Caractéristiques' },
-  { href: '#a-propos', label: 'Équipe' },
+  { href: '/#fonctionnalites', label: 'Fonctionnalités' },
+  { href: '/#comment-ca-marche', label: 'Comment ça marche' },
+  { href: '/#caracteristiques', label: 'Caractéristiques' },
+  { href: '/#a-propos', label: 'Équipe' },
+  { href: '/presse', label: 'Presse' },
 ];
 const points = ['Lumière synchronisée', 'Paiement et accès', 'Amis et SOS'];
 const year = new Date().getFullYear();
@@ -24,8 +25,8 @@ const year = new Date().getFullYear();
     <div class="flex flex-col gap-8 px-6 py-12 md:px-12 lg:flex-row lg:items-center lg:justify-between">
       <h2 id="cta-titre" class="max-w-lg font-display text-h1 uppercase text-text">Faisons vibrer votre prochain festival.</h2>
       <div class="flex flex-wrap items-center gap-4">
-        <Button href="#demo">Demander une démo</Button>
-        <Button href="#fonctionnalites" variant="secondary">En savoir plus</Button>
+        <Button href="/#demo">Demander une démo</Button>
+        <Button href="/#fonctionnalites" variant="secondary">En savoir plus</Button>
       </div>
       <ul class="grid gap-3 text-body text-text">
         {
@@ -46,7 +47,7 @@ const year = new Date().getFullYear();
   <div>
     <div class="px-6 md:px-12">
       <div class="flex flex-wrap items-center gap-x-8 gap-y-6 py-8">
-        <a href="#" class="flex items-center gap-4" aria-label="Syncwave, retour en haut de page">
+        <a href="/" class="flex items-center gap-4" aria-label="Syncwave, accueil">
           <span class="footer-logo relative flex items-center justify-center" aria-hidden="true">
             <FooterRing client:only="react" />
             <img src="/brand/syncwave-mark-512.png" width="512" height="512" alt="" class="absolute size-12" loading="lazy" decoding="async" />

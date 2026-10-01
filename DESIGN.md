@@ -146,7 +146,7 @@ Le hero est le moment fort ; les cartes s'animent ensuite avec retenue, une seul
 2. **Hero** : le mot « Syncwave » se dessine en contour puis se remplit de gauche à droite, et recommence en boucle (pause de 0,9 s entre deux cycles), pendant que quatre petites icônes de fonctions (SOS, accès, paiement, plateforme) tournent lentement autour de lui sur une ellipse, sans jamais croiser les lettres.
 3. **Hero, taille** : le mot est plus grand que `--text-display` (`--wordmark-height`, §4 bis), borné sur mobile pour que l'orbite tienne dans l'écran.
 4. **Textes des cartes** : chaque titre et paragraphe d'une carte de section se déplie mot par mot depuis son bord haut (FoldText) quand il entre dans l'écran (82 % de la hauteur). Il ne se replie pas en remontant, sauf si l'on revient tout en haut de la page : tous les textes sont alors repliés et se redéplieront au prochain passage.
-5. **Récit en cartes empilées** (§5 Récit) : chaque chapitre se fige en haut de l'écran (`position: sticky`) et le suivant monte le recouvrir. La carte recouverte recule (−3,5 % par carte posée dessus) et s'assombrit (voile `--color-bg` à 22 % par carte), jusqu'à trois cartes de profondeur ; au-delà elle disparaît. Les bords des chapitres passés restent visibles au-dessus (décalage de `0.875rem` par carte) : la pile est la mémoire du récit. Chaque chapitre a son moment animé, joué quand il devient actif (voir §5 Récit) ; un chapitre passé reste dans son état final ; tout est rejoué après un retour en haut de page. Sur mobile, pas d'empilement : les cartes défilent, les moments se jouent quand la carte atteint le tiers haut de l'écran.
+5. **Récit en cartes** (§5 Récit) : les chapitres défilent normalement, sans empilement, sans carte figée ni défilement bloqué. Chaque chapitre joue son moment animé quand son haut atteint environ 55 % de la hauteur de l'écran ; un chapitre passé reste dans son état final ; tout est rejoué après un retour en haut de page. La vue éclatée s'ouvre pendant que sa carte monte dans l'écran (de l'entrée par le bas jusqu'à 40 % de la hauteur).
 5 bis. **Bordure des cartes** : un reflet cyan glisse lentement le long des bords haut et bas de chaque carte (StarBorder, 6 s, aller-retour).
 6. **Pied de page** : le texte « SYNCWAVE • MOOROON 5 • » tourne lentement autour du logo (CircularText, un tour en 20 s, accéléré au survol) ; à côté, « Syncwave » se dessine en boucle comme dans le hero.
 7. **Cartes de l'équipe** : légère inclinaison 3D et reflet holographique qui suivent le pointeur (ProfileCard).
@@ -158,7 +158,7 @@ Le hero est le moment fort ; les cartes s'animent ensuite avec retenue, une seul
    - Titre du hero : `StrokeText` s'affiche directement rempli, sans boucle ; l'orbite d'icônes est figée (`paused`).
    - Textes des cartes : simple fondu court, sans pliage (géré par FoldText).
    - Bordure des cartes : reflet immobile (règle CSS globale du §9).
-   - Récit : les cartes s'empilent sans recul ni assombrissement ; la vue éclatée est ouverte d'emblée ; les moments animés et les scènes SVG s'affichent directement dans leur état final (paiement validé, foule allumée, équipe arrivée) ; les boucles sont coupées.
+   - Récit : la vue éclatée est ouverte d'emblée ; les moments animés et les scènes SVG s'affichent directement dans leur état final (paiement validé, foule allumée, équipe arrivée) ; les boucles sont coupées.
    - Pied de page : anneau de texte figé (durée de rotation rendue imperceptible, pas d'accélération au survol) ; « Syncwave » affiché rempli.
    - Cartes de l'équipe : pas d'inclinaison (`enableTilt: false`).
    - Header : apparaît et disparaît sans transition.
@@ -259,7 +259,7 @@ Inventaire fermé. Ne pas créer d'autre composant sans l'ajouter ici.
 
 ### Header
 - Fixe en haut, fond `--color-bg` à 80 % + `backdrop-filter: blur(12px)`, trait bas `--color-line`.
-- Gauche : logo Syncwave. Droite : 3-4 liens d'ancre + bouton primaire "Précommander" (ou le CTA choisi).
+- Gauche : logo Syncwave (lien vers `/`). Droite, dès 1280 px : liens Fonctionnalités, Comment ça marche, Caractéristiques, À propos (ancres de l'accueil, écrites `/#…` pour marcher depuis toutes les pages), Presse (`/presse`, souligné quand on y est), puis le bouton « Demander une démo ». En dessous de 1280 px : bouton « Menu ».
 - Mobile : menu plein écran, fond `--color-bg`.
 - **Masquable** : visible uniquement en haut de page (défilement < 16 px, `HEADER_TOP_THRESHOLD`). Dès qu'on descend, il glisse vers le haut et disparaît ; quand on revient en haut, il redescend (`--duration-header`, `--ease-in-out`). Il émet alors `syncwave:page-top`, qui replie les textes des cartes. Au chargement il est dans son état correct sans animation (visible en haut de page, masqué si la page s'ouvre plus bas). Masqué = `inert` + `aria-hidden="true"`. Il reste affiché si le menu mobile est ouvert ou si le focus clavier entre dans le header (`focusin`). La logique est isolée dans une fonction avec deux constantes en tête (seuil du haut de page, mode `'top-only'`) pour pouvoir passer plus tard au mode « réapparaît dès qu'on remonte ».
 
@@ -313,7 +313,7 @@ Le cœur de la page : une nuit de festival racontée du point de vue de l'organi
 - **Visuels animés** (`src/components/motion/`), tous en SVG ou en calques, couleurs par classes de tokens (`fill-cyan`, `stroke-line`…), boucles jouées seulement quand le chapitre est actif ; hors animation (mouvement réduit, chapitre pas encore atteint), chaque scène montre son état final :
   - `ExplodedView.astro` : cinq calques détourés de `vue-eclatee.webp` (`/public/product/eclate/`), superposés. Assemblés dans le logement du module (37,5 % de la hauteur), les pièces internes (LED, carte, batterie) masquées ; `--story-explode` (0 → 1, posé par StoryStack, lissé) les écarte vers leur position réelle pendant que la carte monte (de 25 % à 100 % de sa couverture). Numéros 01–05 à droite, qui apparaissent l'un après l'autre en fin d'éclatement. Liste des pièces dans la colonne de gauche.
   - `PayMotion.astro`, `CrowdMotion.astro`, `SosMotion.astro` : scènes 400 × 300 décrites dans le tableau ci-dessus.
-- **Réglages** (custom properties sur `.story`, `global.css`) : `--story-top: 1.5rem` (position figée de la première carte ; le header est alors masqué), `--story-peek: 0.875rem`, `--story-dwell: 40svh` (défilement entre deux cartes, le temps de lire), `--story-step: 3.5%`, `--story-shade: 0.22`, `--story-stagger: 140ms`.
+- **Réglages** : `--story-stagger: 140ms` (décalage entre les éléments d'un moment animé, sur `.story`) ; dans le script de StoryStack, `ARRIVED_LINE = 0.4` (la carte est « arrivée » quand son haut atteint 40 % de l'écran), `ACTIVE_AT = 0.75` (active à ≈ 55 %), `EXPLODE_FROM = 0.25`. Espacement entre cartes : `1rem` / `1.5rem`.
 - **Script** (dans StoryStack) : pour chaque carte, sa « couverture » (0 → 1, du bas de l'écran à sa position figée) ; la profondeur d'une carte est la somme des couvertures des suivantes (`--story-depth`). La dernière carte couverte à plus de 50 % est active (`.is-active`), les précédentes passées (`.is-past`). Les états « avant le moment » ne s'appliquent qu'une fois le script prêt (`.story[data-ready]`) : sans JS, tout est visible dans son état final.
 - Chaque carte doit tenir dans l'écran une fois figée (≈ 540 px max à 900 px de haut).
 
@@ -321,14 +321,21 @@ Le cœur de la page : une nuit de festival racontée du point de vue de l'organi
 - `src/components/react/StarBorder.jsx`, copie React Bits sans modification, utilisée par `SectionCard` **sans directive `client:`** : HTML et CSS seulement, aucun JS envoyé. L'animation est du CSS (`@keyframes`), coupée par la règle `prefers-reduced-motion` du §9.
 
 ### Équipe
-- Section `#a-propos` après les cartes, hors carte : titre `--text-h1`, présentation `--text-body-lg`, puis une carte de profil par membre (îlot `TeamCard`, `client:visible`, qui enveloppe `ProfileCard`, copie React Bits sans modification), centrées en ligne et renvoyées à la ligne (trois par ligne sur desktop). Mention « visuels générés par IA » en `--text-small` sous les cartes.
-- Chaque carte : nom, rôle, identifiant, statut, photo détourée. Tant que les vrais contenus manquent : « Membre 1 » à « Membre 5 », pictogramme Syncwave en guise de photo, signalés en TODO.
+- Section `#a-propos` après les cartes, hors carte : titre `--text-h1`, présentation `--text-body-lg`, puis une carte de profil par membre (îlot `TeamCard`, `client:visible`, qui enveloppe `ProfileCard`, copie React Bits sans modification), centrées en ligne et renvoyées à la ligne (trois par ligne sur desktop). 
+- Six cartes, dans l'ordre : Maia Bucamp, Gabriel Franchi, Thomas Baller, Basile De Sousa, Tieoule Coulibaly, Nazim Lameche. Photo détourée (`/public/team/`, 640 × 640), nom (Sora `1.75rem`, une ligne), rôle, identifiant LinkedIn, statut « EPITA ». Le bouton « LinkedIn » ouvre le profil dans un nouvel onglet (sans lien, il devient « Contacter » et mène à `#demo`). Rôle affiché : « Product Owner » pour Thomas Baller (d'après le communiqué), « Équipe Mooroon 5 » pour les autres en attendant leurs rôles (TODO).
 
 ### Bas de page
 Pas une carte : deux bandeaux pleine largeur, d'après la référence fournie.
 - **Bandeau d'appel** et **pied de page** partagent le même fond `--color-bg` opaque (posé sur `footer`). Le bandeau est séparé du reste de la page par un trait haut `--color-line`.
 - **Bandeau d'appel** : Gauche : titre `--text-h1` Sora en majuscules (exception §3.2). Centre : bouton primaire « Demander une démo » + bouton secondaire. Droite : trois points clés, chacun avec une coche `--color-cyan`. Empilé sous `lg`.
 - **Pied de page** : à gauche, le pictogramme Syncwave entouré de son anneau de texte qui tourne (`FooterRing` / CircularText, `client:only`) et « Syncwave » qui se dessine (`SyncwaveWordmark` / StrokeText, `client:only`, `<noscript>` de repli) ; puis un trait `--color-line`, la signature en majuscules espacées (exception §3.2), les liens d'ancre. Dessous, séparée par un trait : phrase de présentation à gauche, « Un produit Mooroon 5 », copyright et mentions légales à droite, en `--text-small` `--color-text-muted`.
+
+### Communiqué de presse (`/presse`)
+Page dédiée au communiqué, mise en page d'un communiqué officiel, dans le style du site (fond animé, cartes sombres).
+- **Le document** (`article`, 8/12 colonnes) : carte `--color-surface`, `--radius-xl`. En-tête séparé par un trait : émetteur (pictogramme + « Syncwave », « un projet Mooroon 5 »), mention « Communiqué de presse » (`--color-cyan`, majuscules espacées), puis date, diffusion « Immédiate » et contact. Titre `--text-h1`, chapô `--text-body-lg` 500 `--color-text`. Corps `--text-body-lg` `--color-text-muted`, premier paragraphe ouvert par la date en gras. Citation mise en avant : bloc `--color-surface-2`, filet gauche `--color-cyan`, texte Sora 600 `--text-h2`, signature avec photo ronde, nom et fonction. Marque de fin « Fin du communiqué » centrée, en `--text-small` majuscules espacées `--color-text-muted`. Puis « À propos de Mooroon5 ».
+- **À côté** (4/12, collant sur desktop) : Contact presse (adresse, bouton « Écrire à l'équipe » qui ouvre un e-mail avec un objet prérempli), L'essentiel (essai, date, lieu, fonction en test), Ressources (bouton « Imprimer ou enregistrer en PDF », lien vers l'accueil). Empilé sous le document sur mobile.
+- **Texte** : reproduit tel que fourni par l'équipe (orthographe « Mooroon5 » et « SyncWave » comprise), sans animation de dépliage (lisibilité). Date de publication et « À propos » marqués TODO.
+- **Impression** : `@media print` dans `global.css` passe les tokens en version papier (fond blanc, texte sombre, cyan foncé), masque header, pied de page, fond animé et éléments `.no-print`.
 
 ### CardText (îlots React)
 - `src/components/react/CardText.jsx`, un îlot `client:idle` par texte (via `Fold.astro`). Enveloppe `FoldText` (copie React Bits sans modification, dépendance `gsap`).
@@ -351,10 +358,12 @@ Voir « Bas de page » ci-dessus.
 ## 6. Structure du site (page unique, ancres)
 
 1. **Hero** — le produit, une phrase, un CTA.
-2 à 5. **Le récit** — « Une nuit de festival avec Syncwave », neuf chapitres en cartes empilées (§5 Récit) : le constat, l'idée (vue éclatée), la préparation (comment ça marche), l'ouverture des portes, les bars, la tête d'affiche, une alerte, la régie, le bilan (prix et specs).
+2 à 5. **Le récit** — « Une nuit de festival avec Syncwave », neuf chapitres en cartes (§5 Récit) : le constat, l'idée (vue éclatée), la préparation (comment ça marche), l'ouverture des portes, les bars, la tête d'affiche, une alerte, la régie, le bilan (prix et specs).
 6. **Précommande / Contact** — formulaire court (e-mail + bouton, ou nom + e-mail + message).
-7. **Équipe** — l'équipe Mooroon 5 en cartes de profil (§5 Équipe). Si les visuels du site sont générés par IA, le dire ici en `--text-small`.
+7. **Équipe** — l'équipe Mooroon 5 en cartes de profil (§5 Équipe).
 8. **Bas de page** — bandeau d'appel puis pied de page (§5 Bas de page).
+
+Autres pages : `/presse` (communiqué de presse, §5) et `/merci` (confirmation du formulaire de démo).
 
 Chaque section entre le hero et l'équipe est un chapitre du récit ou une carte (§5), avec un titre en `--text-h1` et au plus un paragraphe d'introduction. Pas de section "Témoignages", "Partenaires" ou "FAQ" inventée s'il n'y a pas de contenu réel pour la remplir.
 
@@ -377,6 +386,8 @@ Dossier `/public/brand/` :
 - `syncwave-logo.png` — logo complet fourni (S + lettrage), conservé pour les supports hors site (deck, réseaux). Non utilisé sur le site.
 - `mooroon5-mono.svg` — blason Mooroon 5 simplifié monochrome (à produire ; en attendant, texte "Mooroon 5").
 - `mooroon5-full.png` — logo Mooroon 5 complet (section À propos uniquement).
+
+Dossier `/public/team/` : photos détourées de l'équipe (`maia-bucamp`, `gabriel-franchi`, `thomas-baller`, `basile-de-sousa`, `tieoule-coulibaly`), WebP 640 × 640, fond transparent. Plus `nazim-lameche` (recadré en carré sur le haut du buste).
 
 Dossier `/public/product/` (visuels générés par IA, style validé : fond noir, une seule couleur d'accent par image) :
 - `ambiance-foule.webp` — 16:9, foule de festival, bracelets allumés en cyan. Ancien hero bandeau photo : **conservée mais non utilisée** depuis la variante « Fond animé ».
