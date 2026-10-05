@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import SectionCard from '../components/SectionCard.astro';
 import MediaCard from '../components/MediaCard.astro';
+import VideoEmbed from '../components/VideoEmbed.astro';
 import Fold from '../components/Fold.astro';
 import PageBackground from '../components/react/PageBackground.jsx';
 import TeamCard from '../components/react/TeamCard.jsx';
@@ -239,6 +240,7 @@ const team = [
         text="Mooroon 5 est une équipe d’étudiants de l’EPITA. Syncwave est notre projet d’objet connecté : un bracelet pensé pour les festivals, les concerts et l’événementiel, du matériel à la plateforme."
         class="mt-6 text-body-lg text-text-muted"
       />
+      <VideoEmbed id="1uR3jPgPCLo" title="Pub IOT - Mooroon5" class="mx-auto mt-12 max-w-card" />
       <!-- TODO: contenu à valider — présentation de l'équipe, rôle de chacun, contexte du projet -->
       <ul class="team-list mt-12 flex flex-wrap justify-center gap-6">
         {team.map((m) => <li><TeamCard client:visible {...m} /></li>)}

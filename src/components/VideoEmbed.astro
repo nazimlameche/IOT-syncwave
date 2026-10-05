@@ -1,0 +1,25 @@
+---
+/**
+ * Vidéo YouTube intégrée, dans un cadre 16/9 aligné sur MediaCard (fond --color-surface-2, coins arrondis).
+ * Domaine youtube-nocookie : aucun cookie déposé avant la lecture. Chargement différé hors écran.
+ */
+interface Props {
+  id: string;
+  title: string;
+  class?: string;
+}
+const { id, title, class: extra = '' } = Astro.props;
+---
+
+<div class={`rounded-lg bg-surface-2 p-3 ${extra}`}>
+  <div class="aspect-video overflow-hidden rounded-md bg-surface">
+    <iframe
+      class="size-full"
+      src={`https://www.youtube-nocookie.com/embed/${id}`}
+      title={title}
+      loading="lazy"
+      allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen></iframe>
+  </div>
+</div>
